@@ -9,6 +9,7 @@ import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
 import { MapDiscoverScreen } from '@/screens/discover/MapDiscoverScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
+import { QRFullScreen } from '@/screens/tickets/QRFullScreen'
 import { colors, spacing } from '@/theme'
 
 import type { DiscoverStackParamList } from './types'
@@ -72,6 +73,11 @@ export function DiscoverStack() {
         name="Payment"
         component={PaymentScreen}
         options={{ title: 'Payment' }}
+      />
+      <Stack.Screen
+        name="QRFull"
+        component={QRFullScreen}
+        options={{ title: 'Ticket' }}
       />
     </Stack.Navigator>
   )

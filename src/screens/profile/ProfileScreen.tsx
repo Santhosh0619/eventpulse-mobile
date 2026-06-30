@@ -132,6 +132,11 @@ export function ProfileScreen() {
           variant="outline"
           onPress={() => navigation.navigate('Organizations')}
         />
+        <Button
+          title="Staff check-in"
+          variant="outline"
+          onPress={() => navigation.navigate('QRScanner')}
+        />
         <Button title="Sign out" variant="danger" onPress={confirmLogout} />
       </View>
     </Screen>

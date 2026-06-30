@@ -7,6 +7,7 @@ import { CategoryEventsScreen } from '@/screens/events/CategoryEventsScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { HomeScreen } from '@/screens/home/HomeScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
+import { QRFullScreen } from '@/screens/tickets/QRFullScreen'
 import { colors } from '@/theme'
 
 import type { HomeStackParamList } from './types'
@@ -59,6 +60,11 @@ export function HomeStack() {
         name="Payment"
         component={PaymentScreen}
         options={{ title: 'Payment' }}
+      />
+      <Stack.Screen
+        name="QRFull"
+        component={QRFullScreen}
+        options={{ title: 'Ticket' }}
       />
     </Stack.Navigator>
   )

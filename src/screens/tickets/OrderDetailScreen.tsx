@@ -3,7 +3,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
 
 import {
   Badge,
@@ -18,6 +18,7 @@ import { formatCountdown, formatDateLong } from '@/lib/datetime'
 import { formatMoney } from '@/lib/money'
 import { orderStatusBadge } from '@/lib/orderStatus'
 import type { ApiError } from '@/services/api'
+import { attendeeService } from '@/services/attendeeService'
 import { orderService } from '@/services/orderService'
 import type { TicketsStackParamList } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
@@ -61,6 +62,17 @@ export function OrderDetailScreen() {
     const id = setInterval(reload, 5000)
     return () => clearInterval(id)
   }, [pending, reload])
+
+  // Once confirmed, load the buyer's tickets (attendee records) for QR display.
+  const confirmed = order?.status === 'confirmed'
+  const eventId = order?.event_id ?? null
+  const { data: tickets } = useAsync(
+    () =>
+      confirmed && eventId
+        ? attendeeService.listMine(eventId)
+        : Promise.resolve([]),
+    [confirmed, eventId],
+  )
 
   if (loading && !order) {
     return <Spinner fullscreen label="Loading order…" />
@@ -146,6 +158,37 @@ export function OrderDetailScreen() {
         </View>
       </Card>
 
+      {confirmed && tickets && tickets.length > 0 ? (
+        <Card>
+          <Text style={styles.ticketsLabel}>Your tickets</Text>
+          {tickets.map((t) => (
+            <Pressable
+              key={t.id}
+              style={styles.ticketRow}
+              onPress={() =>
+                navigation.navigate('QRFull', {
+                  ticketCode: t.ticket_code,
+                  name: `${t.first_name} ${t.last_name}`.trim(),
+                })
+              }
+            >
+              <View style={styles.ticketInfo}>
+                <Text style={styles.ticketName} numberOfLines={1}>
+                  {`${t.first_name} ${t.last_name}`.trim()}
+                </Text>
+                <Text style={styles.ticketCode}>{t.ticket_code}</Text>
+              </View>
+              <Badge
+                label={t.check_in_status === 'checked_in' ? 'Used' : 'Show QR'}
+                tone={
+                  t.check_in_status === 'checked_in' ? 'neutral' : 'primary'
+                }
+              />
+            </Pressable>
+          ))}
+        </Card>
+      ) : null}
+
       {pending && !expired && !justPaid ? (
         <View style={styles.actions}>
           <Button
@@ -207,4 +250,23 @@ const styles = StyleSheet.create({
   totalLabel: { fontSize: fontSizes.lg, fontWeight: '700', color: colors.text },
   total: { fontSize: fontSizes.lg, fontWeight: '700', color: colors.primary },
   actions: { gap: spacing.sm, marginTop: spacing.lg },
+  ticketsLabel: {
+    fontSize: fontSizes.sm,
+    fontWeight: '700',
+    color: colors.textMuted,
+    textTransform: 'uppercase',
+    marginBottom: spacing.sm,
+  },
+  ticketRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    gap: spacing.md,
+  },
+  ticketInfo: { flex: 1, gap: 2 },
+  ticketName: { fontSize: fontSizes.md, color: colors.text, fontWeight: '600' },
+  ticketCode: { fontSize: fontSizes.xs, color: colors.textMuted },
 })

@@ -34,6 +34,23 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }))
 
+jest.mock('expo-brightness', () => ({
+  getBrightnessAsync: jest.fn(() => Promise.resolve(0.5)),
+  setBrightnessAsync: jest.fn(() => Promise.resolve()),
+}))
+
+jest.mock('expo-camera', () => {
+  const React = require('react')
+  const { View } = require('react-native')
+  return {
+    CameraView: (props) => React.createElement(View, props, props.children),
+    useCameraPermissions: () => [
+      { granted: true, canAskAgain: true },
+      jest.fn(() => Promise.resolve({ granted: true })),
+    ],
+  }
+})
+
 // Mock @stripe/stripe-react-native: native payment module isn't available in jest.
 // `useStripe` must return a STABLE object (created once in the factory closure) —
 // components put its functions in useCallback/useEffect deps, and fresh refs each
