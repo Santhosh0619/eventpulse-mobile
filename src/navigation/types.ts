@@ -7,12 +7,18 @@ export type AuthStackParamList = {
   ForgotPassword: undefined
 }
 
+/** Profile tab stack. */
+export type ProfileStackParamList = {
+  ProfileHome: undefined
+  EditProfile: undefined
+}
+
 /** Bottom tabs — the signed-in app shell. */
 export type MainTabsParamList = {
   Home: undefined
   Discover: undefined
   Tickets: undefined
-  Profile: undefined
+  Profile: NavigatorScreenParams<ProfileStackParamList> | undefined
 }
 
 /**

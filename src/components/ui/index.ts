@@ -1,3 +1,4 @@
+export { Avatar } from './Avatar'
 export { Badge, type BadgeTone } from './Badge'
 export { BottomSheet } from './BottomSheet'
 export { Button, type ButtonSize, type ButtonVariant } from './Button'

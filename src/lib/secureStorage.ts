@@ -13,4 +13,5 @@ export const secureStorage = {
 export const STORAGE_KEYS = {
   accessToken: 'eventpulse.accessToken',
   refreshToken: 'eventpulse.refreshToken',
+  biometricEnabled: 'eventpulse.biometricEnabled',
 } as const
