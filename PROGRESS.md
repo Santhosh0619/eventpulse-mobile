@@ -77,7 +77,28 @@ Branch `feature/auth` → PR #1. Wired to backend `/auth` and `/users`.
 - **Verification:** typecheck ✅, lint ✅, format ✅, 21 tests ✅, Metro bundle ✅,
   CI ✅.
 
-## Next: Phase 3 — Organizations (mobile)
+## Phase 3 — Organizations ✅ COMPLETE (PR #2)
 
-OrgListScreen (user's orgs + role badges), OrgDetailScreen (info + members),
-invitation deep links via linking config; orgService.
+Branch `feature/organizations`. View-focused (creation/management stays on web).
+
+- `services/orgService.ts`: listMine, get, listMembers, acceptInvitation.
+- `types/organization.ts`: Organization, OrgWithRole, Member, OrgRole.
+- Screens: `organizations/OrgListScreen` (FlatList + pull-to-refresh, role badges,
+  empty/error states), `organizations/OrgDetailScreen` (org info, contact, active +
+  pending members), `organizations/AcceptInvitationScreen` (deep-link target,
+  accepts on mount, success/error).
+- Reusable infra: `hooks/useAsync.ts` (mount fetch + reload + unmount-safe),
+  `components/ui/EmptyState.tsx`.
+- Navigation: org screens added to ProfileStack; "My organizations" link on
+  ProfileScreen. Deep links wired in `linking.ts`:
+  `eventpulse://invitations/:token/accept` → AcceptInvitation,
+  `organizations` / `organizations/:orgId`.
+- Tests (31 total): orgService, useAsync (+ prior auth/foundation).
+- **Verification:** typecheck ✅, lint ✅, format ✅, 31 tests ✅, Metro bundle ✅.
+
+## Next: Phase 4 — Event Management & Discovery (mobile)
+
+HomeScreen (featured carousel, category chips, upcoming list), DiscoverScreen
+(search + filter bottom sheet + infinite scroll), MapDiscoverScreen, EventDetail
+(hero, venue map, gallery), CategoryEventsScreen; eventService, categoryService;
+EventCard / CategoryChip / FilterSheet components.

@@ -25,7 +25,15 @@ export const linking: LinkingOptions<RootStackParamList> = {
           Home: 'home',
           Discover: 'discover',
           Tickets: 'tickets',
-          Profile: 'profile',
+          Profile: {
+            screens: {
+              ProfileHome: 'profile',
+              Organizations: 'organizations',
+              OrgDetail: 'organizations/:orgId',
+              // Invitation emails deep-link here: eventpulse://invitations/:token/accept
+              AcceptInvitation: 'invitations/:token/accept',
+            },
+          },
         },
       },
     },

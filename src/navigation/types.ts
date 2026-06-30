@@ -11,6 +11,9 @@ export type AuthStackParamList = {
 export type ProfileStackParamList = {
   ProfileHome: undefined
   EditProfile: undefined
+  Organizations: undefined
+  OrgDetail: { orgId: string; name?: string }
+  AcceptInvitation: { token: string }
 }
 
 /** Bottom tabs — the signed-in app shell. */
