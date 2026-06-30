@@ -1,5 +1,8 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { AcceptInvitationScreen } from '@/screens/organizations/AcceptInvitationScreen'
+import { OrgDetailScreen } from '@/screens/organizations/OrgDetailScreen'
+import { OrgListScreen } from '@/screens/organizations/OrgListScreen'
 import { EditProfileScreen } from '@/screens/profile/EditProfileScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
 import { colors } from '@/theme'
@@ -25,6 +28,23 @@ export function ProfileStack() {
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}
+      />
+      <Stack.Screen
+        name="Organizations"
+        component={OrgListScreen}
+        options={{ title: 'My Organizations' }}
+      />
+      <Stack.Screen
+        name="OrgDetail"
+        component={OrgDetailScreen}
+        options={({ route }) => ({
+          title: route.params.name ?? 'Organization',
+        })}
+      />
+      <Stack.Screen
+        name="AcceptInvitation"
+        component={AcceptInvitationScreen}
+        options={{ title: 'Invitation' }}
       />
     </Stack.Navigator>
   )

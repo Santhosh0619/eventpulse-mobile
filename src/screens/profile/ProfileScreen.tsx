@@ -127,6 +127,11 @@ export function ProfileScreen() {
           variant="outline"
           onPress={() => navigation.navigate('EditProfile')}
         />
+        <Button
+          title="My organizations"
+          variant="outline"
+          onPress={() => navigation.navigate('Organizations')}
+        />
         <Button title="Sign out" variant="danger" onPress={confirmLogout} />
       </View>
     </Screen>
