@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
-import { HomeScreen } from '@/screens/home/HomeScreen'
 import { MyTicketsScreen } from '@/screens/tickets/MyTicketsScreen'
 import { colors } from '@/theme'
 
+import { DiscoverStack } from './DiscoverStack'
+import { HomeStack } from './HomeStack'
 import { ProfileStack } from './ProfileStack'
 
 import type { MainTabsParamList } from './types'
@@ -36,11 +36,15 @@ export function MainTabs() {
         tabBarIcon: makeTabBarIcon(route.name),
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen
         name="Discover"
-        component={DiscoverScreen}
-        options={{ title: 'Discover' }}
+        component={DiscoverStack}
+        options={{ headerShown: false, title: 'Discover' }}
       />
       <Tab.Screen
         name="Tickets"

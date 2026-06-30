@@ -12,6 +12,9 @@ module.exports = {
     'react-native/no-inline-styles': 'off',
     // `void promise` is our intentional fire-and-forget marker.
     'no-void': 'off',
+    // React Navigation options (headerRight/tabBarIcon) legitimately pass
+    // element-returning functions as props.
+    'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
   },
   ignorePatterns: [
     'node_modules/',

@@ -22,8 +22,19 @@ export const linking: LinkingOptions<RootStackParamList> = {
       },
       Main: {
         screens: {
-          Home: 'home',
-          Discover: 'discover',
+          Home: {
+            screens: {
+              HomeMain: 'home',
+              EventDetail: 'events/:eventId',
+              CategoryEvents: 'categories/:categoryId',
+            },
+          },
+          Discover: {
+            screens: {
+              DiscoverMain: 'discover',
+              MapDiscover: 'map',
+            },
+          },
           Tickets: 'tickets',
           Profile: {
             screens: {

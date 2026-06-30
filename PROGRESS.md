@@ -96,9 +96,36 @@ Branch `feature/organizations`. View-focused (creation/management stays on web).
 - Tests (31 total): orgService, useAsync (+ prior auth/foundation).
 - **Verification:** typecheck ✅, lint ✅, format ✅, 31 tests ✅, Metro bundle ✅.
 
-## Next: Phase 4 — Event Management & Discovery (mobile)
+## Phase 4 — Event Discovery ✅ COMPLETE (PR #3)
 
-HomeScreen (featured carousel, category chips, upcoming list), DiscoverScreen
-(search + filter bottom sheet + infinite scroll), MapDiscoverScreen, EventDetail
-(hero, venue map, gallery), CategoryEventsScreen; eventService, categoryService;
-EventCard / CategoryChip / FilterSheet components.
+Branch `feature/events`. Attendee-facing discovery (organizer CRUD stays on web).
+
+- `services/eventService.ts`: search (paginated + filters), featured, getById,
+  getBySlug, getMedia, listCategories.
+- `types/event.ts`: Event, Category, EventMedia, Paginated<T>, EventSearchParams.
+- Components: `events/EventCard` (list + carousel variants), `events/CategoryChip`,
+  `events/FilterSheet` (category + city, BottomSheet-based).
+- Screens: `home/HomeScreen` (featured carousel, category chips, upcoming list),
+  `discover/DiscoverScreen` (debounced search, filter sheet, infinite scroll),
+  `discover/MapDiscoverScreen` (react-native-maps markers), `events/EventDetailScreen`
+  (hero, date range, venue map, gallery, tickets CTA stub), `events/CategoryEventsScreen`.
+- Navigation: Home & Discover tabs are now stacks (`HomeStack`, `DiscoverStack`)
+  hosting EventDetail / CategoryEvents / MapDiscover; deep links added for
+  `events/:eventId`, `categories/:categoryId`, `map`.
+- `lib/datetime.ts` (date-fns formatting helpers).
+- Tests (48 total): eventService, datetime, EventCard, useEventPagination (+ prior).
+- jest: mock `@expo/vector-icons` (font load) + `react-native-maps` globally.
+- Code-review fixes applied: (HIGH) platform-safe maps via `lib/maps.ts` +
+  `lib/maps.native.ts` so web / native-module-absent builds degrade instead of
+  crashing the bundle; (MEDIUM) extracted `hooks/useEventPagination.ts` with a
+  generation token (drops stale in-flight loadMore on filter change) + id dedup,
+  used by Discover & CategoryEvents; (LOW) removed Home→category dead `setFilters`
+  side effect; (LOW) shared `EventDetailParams` type across stacks.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 48 tests ✅, Metro bundle ✅
+  (react-native-maps resolves).
+
+## Next: Phase 5 — Ticketing & Orders (mobile)
+
+Ticket selection bottom sheet, OrderSummary screen, Confirmation screen,
+MyTicketsScreen (orders list), OrderDetailScreen (expiry countdown);
+ticketService, orderService. Wire the EventDetail "Get tickets" CTA.

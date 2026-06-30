@@ -8,6 +8,7 @@ import { create } from 'zustand'
 export interface EventFilters {
   search: string
   categoryId: string | null
+  city: string | null
   startDate: string | null
   endDate: string | null
 }
@@ -21,6 +22,7 @@ interface EventState {
 const EMPTY_FILTERS: EventFilters = {
   search: '',
   categoryId: null,
+  city: null,
   startDate: null,
   endDate: null,
 }
