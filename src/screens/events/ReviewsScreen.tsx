@@ -9,6 +9,7 @@ import { RatingStars } from '@/components/reviews/RatingStars'
 import { ReviewCard } from '@/components/reviews/ReviewCard'
 import { Button, Card, EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
+import { listPerf } from '@/lib/listPerf'
 import { reviewService } from '@/services/reviewService'
 import type { Review, ReviewSummary } from '@/types/review'
 import type { ReviewScreens } from '@/navigation/types'
@@ -87,6 +88,7 @@ export function ReviewsScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['left', 'right']}>
       <FlatList
+        {...listPerf}
         data={data.reviews}
         keyExtractor={(r: Review) => r.id}
         renderItem={({ item }) => <ReviewCard review={item} />}

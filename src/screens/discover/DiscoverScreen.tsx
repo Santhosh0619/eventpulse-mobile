@@ -16,6 +16,7 @@ import { EventCard } from '@/components/events/EventCard'
 import { FilterSheet } from '@/components/events/FilterSheet'
 import { Badge, EmptyState } from '@/components/ui'
 import { useEventPagination } from '@/hooks/useEventPagination'
+import { listPerf } from '@/lib/listPerf'
 import { eventService } from '@/services/eventService'
 import { useEventStore } from '@/store/eventStore'
 import type { Category, Event } from '@/types/event'
@@ -116,6 +117,7 @@ export function DiscoverScreen() {
       </View>
 
       <FlatList
+        {...listPerf}
         data={items}
         keyExtractor={(e) => e.id}
         renderItem={({ item }) => (

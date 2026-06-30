@@ -233,8 +233,34 @@ Branch `feature/recommendations`. (Analytics/admin are organizer/web-only — sk
 - Tests (82 total): recommendationService, PreferencesScreen. jest mocks slider.
 - **Verification:** typecheck ✅, lint ✅, format ✅, 82 tests ✅, Metro bundle ✅.
 
-## Next: Phase 9 — Performance & Polish (mobile)
+## Phase 9 — Performance & Polish ✅ COMPLETE (PR #10)
 
-FlatList tuning (windowSize/removeClippedSubviews/getItemLayout where feasible),
-offline cache of events/tickets (AsyncStorage), image caching (expo-image already
-caches), error boundaries, final pass. App is otherwise feature-complete.
+Branch `feature/perf-offline`.
+
+- `components/ErrorBoundary`: top-level boundary (wraps the app in `App.tsx`) with
+  a recoverable "Try again" fallback instead of a white-screen crash.
+- `lib/listPerf.ts`: shared FlatList perf props (removeClippedSubviews, windowSize,
+  initialNumToRender, maxToRenderPerBatch) applied to Discover, CategoryEvents,
+  MyTickets, OrgList, NotificationCenter, Reviews.
+- `lib/offlineCache.ts` (AsyncStorage): MyTickets caches the orders list and shows
+  it with an "Offline" banner when a fetch fails; OrderDetail caches the order's
+  tickets so QR codes stay viewable offline at the venue.
+- Image caching: handled by `expo-image` (used throughout) out of the box.
+- Tests (87 total): offlineCache, ErrorBoundary.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 87 tests ✅, Metro bundle ✅.
+
+---
+
+## 🎉 MOBILE APP COMPLETE
+
+All phases (0, 2–9) shipped. The EventPulse attendee/staff app covers auth +
+biometric lock, organizations, event discovery/search/map, ticketing & orders,
+Stripe payments, QR tickets + staff check-in, reviews, push notifications,
+recommendations & preferences, and performance/offline polish.
+
+Organizer analytics and the admin panel are intentionally web-only and are not
+part of the attendee/staff mobile app.
+
+**Deferred (out of in-app scope):** EAS production build/submit pipelines, OTA
+(EAS Update), Sentry, and store assets — deployment/ops concerns, mirroring the
+backend's deferred infra.
