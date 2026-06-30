@@ -17,6 +17,9 @@ export interface ApiError {
 export const api: AxiosInstance = axios.create({
   baseURL: env.apiBaseUrl,
   headers: { 'Content-Type': 'application/json' },
+  // Fail rather than hang forever on a flaky network (e.g. a stuck QR check-in
+  // at an event venue). Rejected requests surface as normalized errors.
+  timeout: 15000,
 })
 
 // --- Request: attach the access token --------------------------------------
