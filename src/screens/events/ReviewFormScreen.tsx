@@ -36,10 +36,10 @@ export function ReviewFormScreen() {
         title: title.trim() || undefined,
         comment: comment.trim() || undefined,
       })
+      // Screen unmounts on goBack — don't reset state afterwards.
       navigation.goBack()
     } catch (e) {
       setError((e as ApiError).message ?? 'Could not submit your review.')
-    } finally {
       setSubmitting(false)
     }
   }

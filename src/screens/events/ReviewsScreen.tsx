@@ -39,6 +39,23 @@ export function ReviewsScreen() {
             {summary.total_reviews}{' '}
             {summary.total_reviews === 1 ? 'review' : 'reviews'}
           </Text>
+          {summary.total_reviews > 0 ? (
+            <View style={styles.distribution}>
+              {[5, 4, 3, 2, 1].map((star) => {
+                const n = summary.distribution[String(star)] ?? 0
+                const pct = Math.round((n / summary.total_reviews) * 100)
+                return (
+                  <View key={star} style={styles.distRow}>
+                    <Text style={styles.distStar}>{star}★</Text>
+                    <View style={styles.distTrack}>
+                      <View style={[styles.distFill, { width: `${pct}%` }]} />
+                    </View>
+                    <Text style={styles.distCount}>{n}</Text>
+                  </View>
+                )
+              })}
+            </View>
+          ) : null}
         </Card>
         <Button
           title="Write a review"
@@ -92,6 +109,27 @@ const styles = StyleSheet.create({
   summary: { alignItems: 'center', gap: spacing.xs },
   avg: { fontSize: fontSizes.display, fontWeight: '700', color: colors.text },
   count: { fontSize: fontSizes.sm, color: colors.textMuted },
+  distribution: {
+    alignSelf: 'stretch',
+    gap: spacing.xs,
+    marginTop: spacing.md,
+  },
+  distRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  distStar: { fontSize: fontSizes.xs, color: colors.textMuted, width: 24 },
+  distTrack: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.surfaceAlt,
+    overflow: 'hidden',
+  },
+  distFill: { height: 8, borderRadius: 4, backgroundColor: colors.warning },
+  distCount: {
+    fontSize: fontSizes.xs,
+    color: colors.textMuted,
+    width: 24,
+    textAlign: 'right',
+  },
   empty: {
     fontSize: fontSizes.sm,
     color: colors.textMuted,
