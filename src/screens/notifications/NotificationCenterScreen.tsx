@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button, EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { formatDateLong } from '@/lib/datetime'
+import { listPerf } from '@/lib/listPerf'
 import { notificationService } from '@/services/notificationService'
 import { useNotificationStore } from '@/store/notificationStore'
 import type { AppNotification } from '@/types/notification'
@@ -116,6 +117,7 @@ export function NotificationCenterScreen() {
         </View>
       ) : null}
       <FlatList
+        {...listPerf}
         data={items}
         keyExtractor={(n) => n.id}
         renderItem={renderItem}

@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { EventCard } from '@/components/events/EventCard'
 import { EmptyState } from '@/components/ui'
 import { useEventPagination } from '@/hooks/useEventPagination'
+import { listPerf } from '@/lib/listPerf'
 import { eventService } from '@/services/eventService'
 import type { Event } from '@/types/event'
 import type { HomeStackParamList } from '@/navigation/types'
@@ -44,6 +45,7 @@ export function CategoryEventsScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['left', 'right']}>
       <FlatList
+        {...listPerf}
         data={items}
         keyExtractor={(e) => e.id}
         renderItem={({ item }) => (

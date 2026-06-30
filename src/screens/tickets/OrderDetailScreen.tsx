@@ -16,10 +16,12 @@ import {
 import { useAsync } from '@/hooks/useAsync'
 import { formatCountdown, formatDateLong } from '@/lib/datetime'
 import { formatMoney } from '@/lib/money'
+import { CACHE_KEYS, offlineCache } from '@/lib/offlineCache'
 import { orderStatusBadge } from '@/lib/orderStatus'
 import type { ApiError } from '@/services/api'
 import { attendeeService } from '@/services/attendeeService'
 import { orderService } from '@/services/orderService'
+import type { Attendee } from '@/types/attendee'
 import type { TicketsStackParamList } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
 
@@ -70,9 +72,25 @@ export function OrderDetailScreen() {
     () =>
       confirmed && eventId
         ? attendeeService.listMine(eventId)
-        : Promise.resolve([]),
+        : Promise.resolve<Attendee[]>([]),
     [confirmed, eventId],
   )
+
+  // Cache tickets so their QR codes stay viewable offline at the venue.
+  const [cachedTickets, setCachedTickets] = useState<Attendee[] | null>(null)
+  useEffect(() => {
+    if (confirmed && eventId) {
+      void offlineCache
+        .get<Attendee[]>(CACHE_KEYS.ticketsForEvent(eventId))
+        .then(setCachedTickets)
+    }
+  }, [confirmed, eventId])
+  useEffect(() => {
+    if (eventId && tickets && tickets.length > 0) {
+      void offlineCache.set(CACHE_KEYS.ticketsForEvent(eventId), tickets)
+    }
+  }, [eventId, tickets])
+  const ticketList = tickets ?? cachedTickets ?? []
 
   if (loading && !order) {
     return <Spinner fullscreen label="Loading order…" />
@@ -158,10 +176,10 @@ export function OrderDetailScreen() {
         </View>
       </Card>
 
-      {confirmed && tickets && tickets.length > 0 ? (
+      {confirmed && ticketList.length > 0 ? (
         <Card>
           <Text style={styles.ticketsLabel}>Your tickets</Text>
-          {tickets.map((t) => (
+          {ticketList.map((t) => (
             <Pressable
               key={t.id}
               style={styles.ticketRow}

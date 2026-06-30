@@ -19,6 +19,7 @@ import {
   Spinner,
 } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
+import { listPerf } from '@/lib/listPerf'
 import { orgService } from '@/services/orgService'
 import type { OrgRole, OrgWithRole } from '@/types/organization'
 import type { ProfileStackParamList } from '@/navigation/types'
@@ -83,6 +84,7 @@ export function OrgListScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['left', 'right']}>
       <FlatList
+        {...listPerf}
         data={data ?? []}
         keyExtractor={(o) => o.id}
         renderItem={renderItem}

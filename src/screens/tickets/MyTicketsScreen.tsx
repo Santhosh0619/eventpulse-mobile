@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   FlatList,
   Pressable,
@@ -14,7 +14,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Badge, Card, EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { formatDateLong } from '@/lib/datetime'
+import { listPerf } from '@/lib/listPerf'
 import { formatMoney } from '@/lib/money'
+import { CACHE_KEYS, offlineCache } from '@/lib/offlineCache'
 import { orderStatusBadge } from '@/lib/orderStatus'
 import { orderService } from '@/services/orderService'
 import type { Order } from '@/types/order'
@@ -28,6 +30,18 @@ export function MyTicketsScreen() {
     () => orderService.listMine(),
     [],
   )
+  // Offline fallback: cache the last successful load and show it when the
+  // network fetch fails.
+  const [cached, setCached] = useState<Order[] | null>(null)
+  useEffect(() => {
+    void offlineCache.get<Order[]>(CACHE_KEYS.myOrders).then(setCached)
+  }, [])
+  useEffect(() => {
+    if (data) void offlineCache.set(CACHE_KEYS.myOrders, data)
+  }, [data])
+
+  const orders = data ?? cached ?? []
+  const offline = Boolean(error && !data && cached)
 
   const renderItem = useCallback(
     ({ item }: { item: Order }) => {
@@ -54,10 +68,10 @@ export function MyTicketsScreen() {
     [navigation],
   )
 
-  if (loading && !data) {
+  if (loading && !data && !cached) {
     return <Spinner fullscreen label="Loading your tickets…" />
   }
-  if (error) {
+  if (error && !data && !cached) {
     return (
       <SafeAreaView style={styles.safe}>
         <EmptyState
@@ -73,8 +87,12 @@ export function MyTicketsScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={['left', 'right']}>
+      {offline ? (
+        <Text style={styles.offline}>Offline — showing saved tickets</Text>
+      ) : null}
       <FlatList
-        data={data ?? []}
+        {...listPerf}
+        data={orders}
         keyExtractor={(o) => o.id}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
@@ -95,6 +113,14 @@ export function MyTicketsScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.surface },
+  offline: {
+    backgroundColor: colors.warningLight,
+    color: colors.warning,
+    fontSize: fontSizes.xs,
+    fontWeight: '600',
+    textAlign: 'center',
+    paddingVertical: spacing.xs,
+  },
   list: { padding: spacing.lg, gap: spacing.md, flexGrow: 1 },
   card: { gap: spacing.xs },
   row: {
