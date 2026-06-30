@@ -1,0 +1,13 @@
+# Normalize line endings: store and check out text files with LF so Prettier's
+# format:check passes consistently across platforms (avoids CRLF churn on Windows).
+* text=auto eol=lf
+
+# Binary assets must never be line-ending normalized.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ttf binary
+*.otf binary
+*.ico binary
