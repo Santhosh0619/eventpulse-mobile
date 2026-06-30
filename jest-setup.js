@@ -34,6 +34,18 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }))
 
+// Mock @expo/vector-icons: the real icons try to load native fonts, which
+// throws in the jest environment. Render nothing for any icon family.
+jest.mock('@expo/vector-icons', () => {
+  const Icon = () => null
+  return new Proxy(
+    {},
+    {
+      get: () => Icon,
+    },
+  )
+})
+
 // Lightweight safe-area-context mock: render children, zero insets.
 jest.mock('react-native-safe-area-context', () => {
   const React = require('react')
