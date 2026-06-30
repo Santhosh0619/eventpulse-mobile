@@ -4,6 +4,7 @@ import { Pressable } from 'react-native'
 
 import { ConfirmationScreen } from '@/screens/checkout/ConfirmationScreen'
 import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
+import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
 import { MapDiscoverScreen } from '@/screens/discover/MapDiscoverScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
@@ -66,6 +67,11 @@ export function DiscoverStack() {
         name="OrderDetail"
         component={OrderDetailScreen}
         options={{ title: 'Order' }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{ title: 'Payment' }}
       />
     </Stack.Navigator>
   )

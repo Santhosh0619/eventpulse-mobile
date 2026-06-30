@@ -34,6 +34,22 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }))
 
+// Mock @stripe/stripe-react-native: native payment module isn't available in jest.
+// `useStripe` must return a STABLE object (created once in the factory closure) —
+// components put its functions in useCallback/useEffect deps, and fresh refs each
+// render would cause an infinite effect loop.
+jest.mock('@stripe/stripe-react-native', () => {
+  const sheet = {
+    initPaymentSheet: jest.fn(() => Promise.resolve({})),
+    presentPaymentSheet: jest.fn(() => Promise.resolve({})),
+  }
+  return {
+    StripeProvider: ({ children }) => children,
+    useStripe: () => sheet,
+    PaymentSheetError: { Canceled: 'Canceled', Failed: 'Failed' },
+  }
+})
+
 // Mock react-native-maps: jest may resolve the .native module, which pulls in
 // the native map component. Render simple Views so map screens don't crash.
 jest.mock('react-native-maps', () => {

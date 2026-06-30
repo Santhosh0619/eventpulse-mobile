@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
 import { MyTicketsScreen } from '@/screens/tickets/MyTicketsScreen'
 import { colors } from '@/theme'
@@ -25,6 +26,11 @@ export function TicketsStack() {
         name="OrderDetail"
         component={OrderDetailScreen}
         options={{ title: 'Order' }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{ title: 'Payment' }}
       />
     </Stack.Navigator>
   )

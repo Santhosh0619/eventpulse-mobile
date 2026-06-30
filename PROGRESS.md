@@ -148,8 +148,27 @@ Branch `feature/ticketing`. Order pipeline (payment is Phase 6).
   TicketSelector (+ prior).
 - **Verification:** typecheck ✅, lint ✅, format ✅, 61 tests ✅, Metro bundle ✅.
 
-## Next: Phase 6 — Payments & Check-in (mobile)
+## Phase 6a — Payments ✅ COMPLETE (PR #5)
 
-Stripe React Native PaymentScreen (wire OrderDetail "Pay now"); QRFullScreen
-(ticket QR, max brightness); staff QRScannerScreen (expo-camera) + CheckInDashboard;
-paymentService, attendeeService.
+Branch `feature/payments`. Stripe card payment for pending orders.
+
+- `services/paymentService.ts`: createIntent(orderId) → client_secret.
+- `App.tsx`: wrapped in `StripeProvider` (EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY).
+- `screens/checkout/PaymentScreen.tsx`: createIntent → initPaymentSheet →
+  presentPaymentSheet → poll order until webhook confirms → open OrderDetail.
+  Degrades to "Payments unavailable" when no key is configured.
+- OrderDetail "Pay now" → PaymentScreen; OrderDetail now auto-polls every 5s
+  while pending so it flips to Confirmed after the webhook lands.
+- Payment registered in Home/Discover/Tickets stacks (OrderDetail lives in all).
+- Tests (63 total): paymentService, PaymentScreen happy path (+ prior).
+- jest: mock `@stripe/stripe-react-native` with a STABLE useStripe object
+  (fresh refs each render caused an infinite effect loop / OOM — fixed).
+- **Verification:** typecheck ✅, lint ✅, format ✅, 63 tests ✅, Metro bundle ✅.
+
+## Next: Phase 6b — Tickets QR + Staff Check-in (mobile)
+
+attendeeService (listMine / checkIn / getStats / listForEvent — backend
+`GET /users/me/attendees` added in backend PR #21); QRFullScreen (react-native-qrcode-svg
+
+- expo-brightness) reached from OrderDetail tickets list; staff QRScannerScreen
+  (expo-camera) + CheckInDashboardScreen (auto-refresh 5s), entry from Profile.

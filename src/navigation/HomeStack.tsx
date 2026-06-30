@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import { ConfirmationScreen } from '@/screens/checkout/ConfirmationScreen'
 import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
+import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { CategoryEventsScreen } from '@/screens/events/CategoryEventsScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { HomeScreen } from '@/screens/home/HomeScreen'
@@ -53,6 +54,11 @@ export function HomeStack() {
         name="OrderDetail"
         component={OrderDetailScreen}
         options={{ title: 'Order' }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{ title: 'Payment' }}
       />
     </Stack.Navigator>
   )

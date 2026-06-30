@@ -1,5 +1,6 @@
 import type { RouteProp } from '@react-navigation/native'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import type { StackNavigationProp } from '@react-navigation/stack'
 import { parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { Alert, StyleSheet, Text, View } from 'react-native'
@@ -23,7 +24,9 @@ import { colors, fontSizes, spacing } from '@/theme'
 
 export function OrderDetailScreen() {
   const route = useRoute<RouteProp<TicketsStackParamList, 'OrderDetail'>>()
-  const { orderId } = route.params
+  const navigation =
+    useNavigation<StackNavigationProp<TicketsStackParamList, 'OrderDetail'>>()
+  const { orderId, justPaid } = route.params
 
   const {
     data: order,
@@ -50,6 +53,14 @@ export function OrderDetailScreen() {
     }, 1000)
     return () => clearInterval(id)
   }, [pending, expiresAt])
+
+  // While pending, poll for the webhook-driven confirmation (e.g. after paying)
+  // so the screen flips to "Confirmed" without a manual refresh.
+  useEffect(() => {
+    if (!pending) return
+    const id = setInterval(reload, 5000)
+    return () => clearInterval(id)
+  }, [pending, reload])
 
   if (loading && !order) {
     return <Spinner fullscreen label="Loading order…" />
@@ -101,7 +112,13 @@ export function OrderDetailScreen() {
         Placed {formatDateLong(order.created_at)}
       </Text>
 
-      {pending && remaining != null ? (
+      {pending && justPaid ? (
+        <Card style={styles.countdownCard}>
+          <Text style={styles.countdownLabel}>
+            Payment received — confirming your tickets…
+          </Text>
+        </Card>
+      ) : pending && remaining != null ? (
         <Card style={expired ? styles.expiredCard : styles.countdownCard}>
           <Text style={styles.countdownLabel}>
             {expired ? 'This order has expired' : 'Complete payment within'}
@@ -129,12 +146,12 @@ export function OrderDetailScreen() {
         </View>
       </Card>
 
-      {pending && !expired ? (
+      {pending && !expired && !justPaid ? (
         <View style={styles.actions}>
           <Button
             title="Pay now"
             onPress={() =>
-              Alert.alert('Payment', 'Card payment arrives in the next update.')
+              navigation.navigate('Payment', { orderId: order.id })
             }
           />
           <Button
