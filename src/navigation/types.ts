@@ -31,6 +31,7 @@ export type CheckoutScreens = {
   }
   Confirmation: { orderId: string }
   OrderDetail: { orderId: string }
+  Payment: { orderId: string }
 }
 
 /** Home tab stack. */
@@ -51,6 +52,7 @@ export type DiscoverStackParamList = CheckoutScreens & {
 export type TicketsStackParamList = {
   TicketsMain: undefined
   OrderDetail: { orderId: string }
+  Payment: { orderId: string }
 }
 
 /** Bottom tabs — the signed-in app shell. */

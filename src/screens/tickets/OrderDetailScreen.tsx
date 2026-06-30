@@ -1,5 +1,6 @@
 import type { RouteProp } from '@react-navigation/native'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import type { StackNavigationProp } from '@react-navigation/stack'
 import { parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { Alert, StyleSheet, Text, View } from 'react-native'
@@ -23,6 +24,8 @@ import { colors, fontSizes, spacing } from '@/theme'
 
 export function OrderDetailScreen() {
   const route = useRoute<RouteProp<TicketsStackParamList, 'OrderDetail'>>()
+  const navigation =
+    useNavigation<StackNavigationProp<TicketsStackParamList, 'OrderDetail'>>()
   const { orderId } = route.params
 
   const {
@@ -50,6 +53,14 @@ export function OrderDetailScreen() {
     }, 1000)
     return () => clearInterval(id)
   }, [pending, expiresAt])
+
+  // While pending, poll for the webhook-driven confirmation (e.g. after paying)
+  // so the screen flips to "Confirmed" without a manual refresh.
+  useEffect(() => {
+    if (!pending) return
+    const id = setInterval(reload, 5000)
+    return () => clearInterval(id)
+  }, [pending, reload])
 
   if (loading && !order) {
     return <Spinner fullscreen label="Loading order…" />
@@ -134,7 +145,7 @@ export function OrderDetailScreen() {
           <Button
             title="Pay now"
             onPress={() =>
-              Alert.alert('Payment', 'Card payment arrives in the next update.')
+              navigation.navigate('Payment', { orderId: order.id })
             }
           />
           <Button
