@@ -16,6 +16,14 @@ export function formatTime(iso: string): string {
   return format(parseISO(iso), 'h:mm a')
 }
 
+/** "mm:ss" remaining from a millisecond duration; clamps at 0. */
+export function formatCountdown(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000))
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+}
+
 /**
  * A human range: same-day events collapse to one date with a time span,
  * multi-day events show both dates.

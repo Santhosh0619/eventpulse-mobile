@@ -19,25 +19,45 @@ export type ProfileStackParamList = {
 /** Params for the EventDetail screen, shared by every stack that hosts it. */
 export type EventDetailParams = { eventId: string; title?: string }
 
+/**
+ * Checkout + order screens. Registered in every stack that can start a purchase
+ * (Home, Discover) so the flow stays within one stack without cross-tab jumps.
+ */
+export type CheckoutScreens = {
+  OrderSummary: {
+    eventId: string
+    eventTitle: string
+    selections: import('@/types/order').TicketSelection[]
+  }
+  Confirmation: { orderId: string }
+  OrderDetail: { orderId: string }
+}
+
 /** Home tab stack. */
-export type HomeStackParamList = {
+export type HomeStackParamList = CheckoutScreens & {
   HomeMain: undefined
   EventDetail: EventDetailParams
   CategoryEvents: { categoryId: string; name: string }
 }
 
 /** Discover tab stack. */
-export type DiscoverStackParamList = {
+export type DiscoverStackParamList = CheckoutScreens & {
   DiscoverMain: undefined
   MapDiscover: undefined
   EventDetail: EventDetailParams
+}
+
+/** Tickets tab stack. */
+export type TicketsStackParamList = {
+  TicketsMain: undefined
+  OrderDetail: { orderId: string }
 }
 
 /** Bottom tabs — the signed-in app shell. */
 export type MainTabsParamList = {
   Home: NavigatorScreenParams<HomeStackParamList> | undefined
   Discover: NavigatorScreenParams<DiscoverStackParamList> | undefined
-  Tickets: undefined
+  Tickets: NavigatorScreenParams<TicketsStackParamList> | undefined
   Profile: NavigatorScreenParams<ProfileStackParamList> | undefined
 }
 

@@ -124,8 +124,32 @@ Branch `feature/events`. Attendee-facing discovery (organizer CRUD stays on web)
 - **Verification:** typecheck ✅, lint ✅, format ✅, 48 tests ✅, Metro bundle ✅
   (react-native-maps resolves).
 
-## Next: Phase 5 — Ticketing & Orders (mobile)
+## Phase 5 — Ticketing & Orders ✅ COMPLETE (PR #4)
 
-Ticket selection bottom sheet, OrderSummary screen, Confirmation screen,
-MyTicketsScreen (orders list), OrderDetailScreen (expiry countdown);
-ticketService, orderService. Wire the EventDetail "Get tickets" CTA.
+Branch `feature/ticketing`. Order pipeline (payment is Phase 6).
+
+- `services/ticketService.ts`: listTypes, getAvailability.
+- `services/orderService.ts`: place, listMine, get, cancel.
+- `types/order.ts`: TicketType, TierAvailability, AvailabilityResponse, Order,
+  OrderItem, OrderCreate, TicketSelection (money fields are strings).
+- `components/tickets/TicketSelector.tsx`: bottom-sheet tier picker with quantity
+  steppers (respects availability/max/on-sale), live subtotal.
+- Screens: `checkout/OrderSummaryScreen` (review + place order),
+  `checkout/ConfirmationScreen` (order placed/pending), `tickets/MyTicketsScreen`
+  (orders list, pull-to-refresh — replaces placeholder),
+  `tickets/OrderDetailScreen` (status, expiry countdown, cancel, Pay-now stub).
+- `lib/money.ts` (Intl currency formatting), `lib/orderStatus.ts` (status→badge),
+  `lib/datetime.formatCountdown`.
+- Navigation: Tickets tab is now `TicketsStack` (TicketsMain + OrderDetail);
+  checkout screens (OrderSummary/Confirmation/OrderDetail) registered in Home &
+  Discover stacks so the flow stays in one stack. EventDetail "Get tickets" opens
+  TicketSelector → OrderSummary → Confirmation.
+- Tests (61 total): ticketService, orderService, money, formatCountdown,
+  TicketSelector (+ prior).
+- **Verification:** typecheck ✅, lint ✅, format ✅, 61 tests ✅, Metro bundle ✅.
+
+## Next: Phase 6 — Payments & Check-in (mobile)
+
+Stripe React Native PaymentScreen (wire OrderDetail "Pay now"); QRFullScreen
+(ticket QR, max brightness); staff QRScannerScreen (expo-camera) + CheckInDashboard;
+paymentService, attendeeService.

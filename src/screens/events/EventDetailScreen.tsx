@@ -1,9 +1,12 @@
 import { Ionicons } from '@expo/vector-icons'
 import type { RouteProp } from '@react-navigation/native'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import type { StackNavigationProp } from '@react-navigation/stack'
 import { Image } from 'expo-image'
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useState } from 'react'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
+import { TicketSelector } from '@/components/tickets/TicketSelector'
 import { MapView, Marker, mapsAvailable } from '@/lib/maps'
 import { Badge, Button, EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
@@ -15,7 +18,10 @@ import { colors, fontSizes, radii, spacing } from '@/theme'
 
 export function EventDetailScreen() {
   const route = useRoute<RouteProp<HomeStackParamList, 'EventDetail'>>()
+  const navigation =
+    useNavigation<StackNavigationProp<HomeStackParamList, 'EventDetail'>>()
   const { eventId } = route.params
+  const [selectorOpen, setSelectorOpen] = useState(false)
 
   const { data, loading, error, reload } = useAsync(
     () =>
@@ -159,14 +165,23 @@ export function EventDetailScreen() {
         <Button
           title={cancelled ? 'Event cancelled' : 'Get tickets'}
           disabled={cancelled}
-          onPress={() =>
-            Alert.alert(
-              'Tickets',
-              'Ticket purchase arrives in the next update.',
-            )
-          }
+          onPress={() => setSelectorOpen(true)}
         />
       </View>
+
+      <TicketSelector
+        visible={selectorOpen}
+        onClose={() => setSelectorOpen(false)}
+        eventId={event.id}
+        onContinue={(selections) => {
+          setSelectorOpen(false)
+          navigation.navigate('OrderSummary', {
+            eventId: event.id,
+            eventTitle: event.title,
+            selections,
+          })
+        }}
+      />
     </View>
   )
 }

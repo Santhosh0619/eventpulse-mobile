@@ -1,0 +1,31 @@
+import { createStackNavigator } from '@react-navigation/stack'
+
+import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
+import { MyTicketsScreen } from '@/screens/tickets/MyTicketsScreen'
+import { colors } from '@/theme'
+
+import type { TicketsStackParamList } from './types'
+
+const Stack = createStackNavigator<TicketsStackParamList>()
+
+export function TicketsStack() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: colors.primary,
+        headerTitleStyle: { color: colors.text },
+      }}
+    >
+      <Stack.Screen
+        name="TicketsMain"
+        component={MyTicketsScreen}
+        options={{ title: 'My Tickets' }}
+      />
+      <Stack.Screen
+        name="OrderDetail"
+        component={OrderDetailScreen}
+        options={{ title: 'Order' }}
+      />
+    </Stack.Navigator>
+  )
+}

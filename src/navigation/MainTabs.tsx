@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import { MyTicketsScreen } from '@/screens/tickets/MyTicketsScreen'
 import { colors } from '@/theme'
 
 import { DiscoverStack } from './DiscoverStack'
 import { HomeStack } from './HomeStack'
 import { ProfileStack } from './ProfileStack'
+import { TicketsStack } from './TicketsStack'
 
 import type { MainTabsParamList } from './types'
 
@@ -48,8 +48,8 @@ export function MainTabs() {
       />
       <Tab.Screen
         name="Tickets"
-        component={MyTicketsScreen}
-        options={{ title: 'My Tickets' }}
+        component={TicketsStack}
+        options={{ headerShown: false, title: 'My Tickets' }}
       />
       <Tab.Screen
         name="Profile"
