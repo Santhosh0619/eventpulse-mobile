@@ -47,10 +47,28 @@ export function MainTabs() {
 
     // A push arriving in the foreground bumps the badge.
     const received = Notifications.addNotificationReceivedListener(loadCount)
-    // Tapping a push opens the notification center.
+    // Tapping a push deep-links to the relevant screen using the notification's
+    // data payload, falling back to the notification center.
     const responded = Notifications.addNotificationResponseReceivedListener(
-      () => {
-        if (navigationRef.isReady()) {
+      (response) => {
+        if (!navigationRef.isReady()) return
+        const data = (response.notification.request.content.data ??
+          {}) as Record<string, unknown>
+        const eventId =
+          typeof data.event_id === 'string' ? data.event_id : undefined
+        const orderId =
+          typeof data.order_id === 'string' ? data.order_id : undefined
+        if (eventId) {
+          navigationRef.navigate('Main', {
+            screen: 'Home',
+            params: { screen: 'EventDetail', params: { eventId } },
+          })
+        } else if (orderId) {
+          navigationRef.navigate('Main', {
+            screen: 'Tickets',
+            params: { screen: 'OrderDetail', params: { orderId } },
+          })
+        } else {
           navigationRef.navigate('Main', {
             screen: 'Home',
             params: { screen: 'NotificationCenter' },
