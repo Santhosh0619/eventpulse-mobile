@@ -9,7 +9,6 @@ import { EventCard } from '@/components/events/EventCard'
 import { EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { eventService } from '@/services/eventService'
-import { useEventStore } from '@/store/eventStore'
 import type { Category, Event } from '@/types/event'
 import type { HomeStackParamList } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
@@ -17,7 +16,6 @@ import { colors, fontSizes, spacing } from '@/theme'
 export function HomeScreen() {
   const navigation =
     useNavigation<StackNavigationProp<HomeStackParamList, 'HomeMain'>>()
-  const setFilters = useEventStore((s) => s.setFilters)
 
   const { data, loading, error, reload } = useAsync(
     () =>
@@ -43,15 +41,12 @@ export function HomeScreen() {
   )
 
   const openCategory = useCallback(
-    (category: Category) => {
-      // Seed the Discover filter and jump there for the full category list.
-      setFilters({ categoryId: category.id })
+    (category: Category) =>
       navigation.navigate('CategoryEvents', {
         categoryId: category.id,
         name: category.name,
-      })
-    },
-    [navigation, setFilters],
+      }),
+    [navigation],
   )
 
   if (loading && !data) {

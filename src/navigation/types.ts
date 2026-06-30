@@ -16,10 +16,13 @@ export type ProfileStackParamList = {
   AcceptInvitation: { token: string }
 }
 
+/** Params for the EventDetail screen, shared by every stack that hosts it. */
+export type EventDetailParams = { eventId: string; title?: string }
+
 /** Home tab stack. */
 export type HomeStackParamList = {
   HomeMain: undefined
-  EventDetail: { eventId: string; title?: string }
+  EventDetail: EventDetailParams
   CategoryEvents: { categoryId: string; name: string }
 }
 
@@ -27,7 +30,7 @@ export type HomeStackParamList = {
 export type DiscoverStackParamList = {
   DiscoverMain: undefined
   MapDiscover: undefined
-  EventDetail: { eventId: string; title?: string }
+  EventDetail: EventDetailParams
 }
 
 /** Bottom tabs — the signed-in app shell. */

@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { EventCard } from '@/components/events/EventCard'
 import { FilterSheet } from '@/components/events/FilterSheet'
 import { Badge, EmptyState } from '@/components/ui'
+import { useEventPagination } from '@/hooks/useEventPagination'
 import { eventService } from '@/services/eventService'
 import { useEventStore } from '@/store/eventStore'
 import type { Category, Event } from '@/types/event'
@@ -31,12 +32,6 @@ export function DiscoverScreen() {
   const resetFilters = useEventStore((s) => s.resetFilters)
 
   const [searchText, setSearchText] = useState(filters.search)
-  const [items, setItems] = useState<Event[]>([])
-  const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [sheetVisible, setSheetVisible] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
 
@@ -53,55 +48,22 @@ export function DiscoverScreen() {
       .catch(() => setCategories([]))
   }, [])
 
-  const buildParams = useCallback(
-    (nextPage: number) => ({
-      page: nextPage,
-      limit: PAGE_SIZE,
-      q: filters.search || undefined,
-      category_id: filters.categoryId ?? undefined,
-      city: filters.city ?? undefined,
-    }),
+  const fetchPage = useCallback(
+    (page: number) =>
+      eventService.search({
+        page,
+        limit: PAGE_SIZE,
+        q: filters.search || undefined,
+        category_id: filters.categoryId ?? undefined,
+        city: filters.city ?? undefined,
+      }),
     [filters.search, filters.categoryId, filters.city],
   )
 
-  // Reload page 1 whenever the active filters change.
-  useEffect(() => {
-    let ignore = false
-    setLoading(true)
-    setError(null)
-    eventService
-      .search(buildParams(1))
-      .then((res) => {
-        if (ignore) return
-        setItems(res.items)
-        setTotal(res.total)
-        setPage(1)
-      })
-      .catch((e) => {
-        if (!ignore)
-          setError((e as { message?: string }).message ?? 'Failed to load')
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false)
-      })
-    return () => {
-      ignore = true
-    }
-  }, [buildParams])
-
-  const loadMore = useCallback(() => {
-    if (loadingMore || loading || items.length >= total) return
-    setLoadingMore(true)
-    const next = page + 1
-    eventService
-      .search(buildParams(next))
-      .then((res) => {
-        setItems((prev) => [...prev, ...res.items])
-        setPage(next)
-      })
-      .catch(() => {})
-      .finally(() => setLoadingMore(false))
-  }, [loadingMore, loading, items.length, total, page, buildParams])
+  const { items, loading, loadingMore, error, loadMore } = useEventPagination(
+    fetchPage,
+    [filters.search, filters.categoryId, filters.city],
+  )
 
   const openEvent = useCallback(
     (event: Event) =>

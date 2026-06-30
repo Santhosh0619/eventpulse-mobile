@@ -113,9 +113,15 @@ Branch `feature/events`. Attendee-facing discovery (organizer CRUD stays on web)
   hosting EventDetail / CategoryEvents / MapDiscover; deep links added for
   `events/:eventId`, `categories/:categoryId`, `map`.
 - `lib/datetime.ts` (date-fns formatting helpers).
-- Tests (44 total): eventService, datetime, EventCard (+ prior).
-- jest: mock `@expo/vector-icons` (font load) globally.
-- **Verification:** typecheck ✅, lint ✅, format ✅, 44 tests ✅, Metro bundle ✅
+- Tests (48 total): eventService, datetime, EventCard, useEventPagination (+ prior).
+- jest: mock `@expo/vector-icons` (font load) + `react-native-maps` globally.
+- Code-review fixes applied: (HIGH) platform-safe maps via `lib/maps.ts` +
+  `lib/maps.native.ts` so web / native-module-absent builds degrade instead of
+  crashing the bundle; (MEDIUM) extracted `hooks/useEventPagination.ts` with a
+  generation token (drops stale in-flight loadMore on filter change) + id dedup,
+  used by Discover & CategoryEvents; (LOW) removed Home→category dead `setFilters`
+  side effect; (LOW) shared `EventDetailParams` type across stacks.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 48 tests ✅, Metro bundle ✅
   (react-native-maps resolves).
 
 ## Next: Phase 5 — Ticketing & Orders (mobile)

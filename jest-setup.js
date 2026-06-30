@@ -34,6 +34,15 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }))
 
+// Mock react-native-maps: jest may resolve the .native module, which pulls in
+// the native map component. Render simple Views so map screens don't crash.
+jest.mock('react-native-maps', () => {
+  const React = require('react')
+  const { View } = require('react-native')
+  const Mock = (props) => React.createElement(View, props, props.children)
+  return { __esModule: true, default: Mock, Marker: Mock }
+})
+
 // Mock @expo/vector-icons: the real icons try to load native fonts, which
 // throws in the jest environment. Render nothing for any icon family.
 jest.mock('@expo/vector-icons', () => {

@@ -3,8 +3,8 @@ import type { RouteProp } from '@react-navigation/native'
 import { useRoute } from '@react-navigation/native'
 import { Image } from 'expo-image'
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
 
+import { MapView, Marker, mapsAvailable } from '@/lib/maps'
 import { Badge, Button, EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { formatEventRange } from '@/lib/datetime'
@@ -50,7 +50,8 @@ export function EventDetailScreen() {
   ]
     .filter(Boolean)
     .join(', ')
-  const hasCoords = event.latitude != null && event.longitude != null
+  const hasCoords =
+    mapsAvailable && event.latitude != null && event.longitude != null
   const cancelled = event.status === 'cancelled'
 
   return (

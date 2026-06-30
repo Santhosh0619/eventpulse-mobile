@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
 import { useMemo } from 'react'
 import { StyleSheet, View } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
 
+import { MapView, Marker, mapsAvailable } from '@/lib/maps'
 import { EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { eventService } from '@/services/eventService'
@@ -36,6 +36,15 @@ export function MapDiscoverScreen() {
     }
   }, [located])
 
+  if (!mapsAvailable) {
+    return (
+      <EmptyState
+        icon="map-outline"
+        title="Map unavailable"
+        message="The map isn't supported on this platform."
+      />
+    )
+  }
   if (loading && !data) {
     return <Spinner fullscreen label="Loading map…" />
   }
