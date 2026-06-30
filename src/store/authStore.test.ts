@@ -1,3 +1,4 @@
+import { biometric } from '@/lib/biometric'
 import { secureStorage, STORAGE_KEYS } from '@/lib/secureStorage'
 import { useAuthStore } from '@/store/authStore'
 
@@ -64,5 +65,36 @@ describe('authStore', () => {
     await useAuthStore.getState().hydrate()
     expect(useAuthStore.getState().isHydrating).toBe(false)
     expect(useAuthStore.getState().accessToken).toBeNull()
+  })
+
+  it('hydrate locks the session when biometric is enabled and available', async () => {
+    await secureStorage.set(STORAGE_KEYS.accessToken, 'a')
+    await secureStorage.set(STORAGE_KEYS.refreshToken, 'r')
+    await secureStorage.set(STORAGE_KEYS.biometricEnabled, '1')
+    jest.spyOn(biometric, 'isAvailable').mockResolvedValueOnce(true)
+
+    await useAuthStore.getState().hydrate()
+
+    expect(useAuthStore.getState().locked).toBe(true)
+  })
+
+  it('hydrate does NOT lock when biometric is enabled but unavailable', async () => {
+    await secureStorage.set(STORAGE_KEYS.accessToken, 'a')
+    await secureStorage.set(STORAGE_KEYS.refreshToken, 'r')
+    await secureStorage.set(STORAGE_KEYS.biometricEnabled, '1')
+    jest.spyOn(biometric, 'isAvailable').mockResolvedValueOnce(false)
+
+    await useAuthStore.getState().hydrate()
+
+    // A removed/disabled sensor must not strand the session.
+    expect(useAuthStore.getState().locked).toBe(false)
+    expect(useAuthStore.getState().accessToken).toBe('a')
+  })
+
+  it('clear removes the biometric preference', () => {
+    useAuthStore.getState().clear()
+    expect(secureStorage.remove).toHaveBeenCalledWith(
+      STORAGE_KEYS.biometricEnabled,
+    )
   })
 })

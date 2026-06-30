@@ -52,10 +52,10 @@ describe('userService', () => {
     const url = await userService.uploadAvatar('file:///tmp/pic.png')
 
     expect(url).toBe('/uploads/a.jpg')
-    const [path, body, config] = mockApi.put.mock.calls[0]
+    const [path, body] = mockApi.put.mock.calls[0]
     expect(path).toBe('/api/v1/users/me/avatar')
     expect(body).toBeInstanceOf(FormData)
-    expect(config.headers['Content-Type']).toBe('multipart/form-data')
+    // No explicit Content-Type: the runtime sets the multipart boundary.
     expect(useAuthStore.getState().user?.profile?.avatar_url).toBe(
       '/uploads/a.jpg',
     )

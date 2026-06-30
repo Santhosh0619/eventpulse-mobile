@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 
+import { biometric } from '@/lib/biometric'
 import { secureStorage, STORAGE_KEYS } from '@/lib/secureStorage'
 import type { AuthUser } from '@/types/user'
 
@@ -46,23 +47,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user: null, accessToken: null, refreshToken: null, locked: false })
     void secureStorage.remove(STORAGE_KEYS.accessToken)
     void secureStorage.remove(STORAGE_KEYS.refreshToken)
+    // Drop the biometric preference too, so a sign-out fully resets the device.
+    void secureStorage.remove(STORAGE_KEYS.biometricEnabled)
   },
 
   hydrate: async () => {
     try {
-      const [access, refresh, biometric] = await Promise.all([
+      const [access, refresh, biometricFlag] = await Promise.all([
         secureStorage.get(STORAGE_KEYS.accessToken),
         secureStorage.get(STORAGE_KEYS.refreshToken),
         secureStorage.get(STORAGE_KEYS.biometricEnabled),
       ])
       if (access && refresh) {
-        // A persisted session exists. Gate it behind biometric unlock if the
-        // user opted in; otherwise restore it immediately (auto-login).
-        set({
-          accessToken: access,
-          refreshToken: refresh,
-          locked: biometric === '1',
-        })
+        // A persisted session exists. Gate it behind biometric unlock only if
+        // the user opted in AND a usable sensor is still enrolled — otherwise a
+        // removed/disabled sensor would strand the session. Else auto-login.
+        const lock = biometricFlag === '1' && (await biometric.isAvailable())
+        set({ accessToken: access, refreshToken: refresh, locked: lock })
       }
     } finally {
       set({ isHydrating: false })

@@ -30,10 +30,12 @@ export const userService = {
     // RN FormData accepts this {uri,name,type} object for file parts.
     form.append('file', { uri, name, type } as unknown as Blob)
 
+    // Don't set Content-Type manually: the runtime derives the multipart
+    // boundary from the FormData. Forcing the header drops the boundary and
+    // the server can't parse the parts.
     const { data } = await api.put<{ avatar_url: string }>(
       '/api/v1/users/me/avatar',
       form,
-      { headers: { 'Content-Type': 'multipart/form-data' } },
     )
     // Reflect the new avatar in the cached user immediately.
     const { user, setUser } = useAuthStore.getState()
