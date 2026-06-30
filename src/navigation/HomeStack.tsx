@@ -5,6 +5,8 @@ import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
 import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { CategoryEventsScreen } from '@/screens/events/CategoryEventsScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
+import { ReviewFormScreen } from '@/screens/events/ReviewFormScreen'
+import { ReviewsScreen } from '@/screens/events/ReviewsScreen'
 import { HomeScreen } from '@/screens/home/HomeScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
 import { QRFullScreen } from '@/screens/tickets/QRFullScreen'
@@ -65,6 +67,16 @@ export function HomeStack() {
         name="QRFull"
         component={QRFullScreen}
         options={{ title: 'Ticket' }}
+      />
+      <Stack.Screen
+        name="Reviews"
+        component={ReviewsScreen}
+        options={{ title: 'Reviews' }}
+      />
+      <Stack.Screen
+        name="ReviewForm"
+        component={ReviewFormScreen}
+        options={{ title: 'Write a Review' }}
       />
     </Stack.Navigator>
   )

@@ -185,9 +185,23 @@ Branch `feature/checkin`. Uses backend `GET /users/me/attendees` (backend PR #21
   expo-brightness.
 - **Verification:** typecheck ✅, lint ✅, format ✅, 68 tests ✅, Metro bundle ✅.
 
-## Next: Phase 7 — Reviews & Notifications (mobile)
+## Phase 7a — Reviews ✅ COMPLETE (PR #7)
 
-Review submission + reviews list on EventDetail (reviewService); push
-notifications (expo-notifications + FCM token via PUT /users/me/fcm-token),
-NotificationCenterScreen (read/unread, swipe), tab badge, deep-link from tap;
-notificationService.
+Branch `feature/reviews`.
+
+- `services/reviewService.ts`: list, getSummary, submit. `types/review.ts`.
+- Components: `reviews/RatingStars` (display + interactive picker),
+  `reviews/ReviewCard` (rating, title, comment, organizer response).
+- Screens: `events/ReviewsScreen` (summary card with avg + count, review list,
+  "Write a review"), `events/ReviewFormScreen` (star picker + title + comment).
+- EventDetail: "Ratings & reviews" entry → ReviewsScreen.
+- Navigation: Reviews + ReviewForm added to Home & Discover stacks.
+- Tests (73 total): reviewService, ReviewFormScreen (validation + submit).
+- **Verification:** typecheck ✅, lint ✅, format ✅, 73 tests ✅, Metro bundle ✅.
+
+## Next: Phase 7b — Notifications (mobile)
+
+notificationService (list, unreadCount, markRead, markAllRead); push via
+expo-notifications (permission, register FCM token via PUT /users/me/fcm-token,
+foreground/response handlers); NotificationCenterScreen (read/unread, swipe/tap to
+read), tab badge (useNotificationStore), deep-link from notification tap.
