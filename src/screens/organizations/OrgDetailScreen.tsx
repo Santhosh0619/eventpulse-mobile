@@ -103,13 +103,13 @@ export function OrgDetailScreen() {
 }
 
 function MemberRow({ member, pending }: { member: Member; pending?: boolean }) {
-  const label = pending
-    ? (member.invited_email ?? 'Invited member')
-    : (member.user_id ?? 'Member')
+  // The membership record carries no display name; show the invite email when
+  // present (and never the raw user_id UUID), otherwise a generic label.
+  const label = member.invited_email ?? (pending ? 'Invited member' : 'Member')
   return (
     <View style={styles.memberRow}>
       <Text style={styles.memberName} numberOfLines={1}>
-        {pending ? member.invited_email : label}
+        {label}
       </Text>
       <Badge label={member.role} tone={ROLE_TONE[member.role]} />
     </View>
