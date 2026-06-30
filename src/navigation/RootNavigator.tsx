@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useEffect } from 'react'
 
 import { Spinner } from '@/components/ui'
+import { LockScreen } from '@/screens/auth/LockScreen'
 import { useAuthStore } from '@/store/authStore'
 
 import { AuthStack } from './AuthStack'
@@ -20,6 +21,7 @@ const Stack = createStackNavigator<RootStackParamList>()
 export function RootNavigator() {
   const isHydrating = useAuthStore((s) => s.isHydrating)
   const accessToken = useAuthStore((s) => s.accessToken)
+  const locked = useAuthStore((s) => s.locked)
   const hydrate = useAuthStore((s) => s.hydrate)
 
   useEffect(() => {
@@ -28,6 +30,12 @@ export function RootNavigator() {
 
   if (isHydrating) {
     return <Spinner fullscreen label="Loading…" />
+  }
+
+  // A persisted session gated behind biometric unlock: show the lock screen
+  // until the user authenticates (outside NavigationContainer — it's a gate).
+  if (accessToken && locked) {
+    return <LockScreen />
   }
 
   return (

@@ -52,9 +52,32 @@ Bootstrap (initial commit on `main`, like the web repo's foundation).
   rather than the web's zustand/persist-to-localStorage.
 - BottomSheet is Modal-backed (no gesture-drag) to stay dependency-light.
 
-## Next: Phase 2 — Authentication & User Management (mobile)
+## Phase 2 — Authentication & User Management ✅ COMPLETE (PR #1)
 
-Login (with biometric option), Register, ForgotPassword screens; authService;
-ProfileScreen with avatar picker; wire RootNavigator to real auth state.
-(Phase 1 in the plan is backend/web foundation; mobile auth work is the next
-mobile milestone.)
+Branch `feature/auth` → PR #1. Wired to backend `/auth` and `/users`.
+
+- `services/authService.ts`: login, register, fetchCurrentUser, logout,
+  forgotPassword, resetPassword, verifyEmail.
+- `services/userService.ts`: getMyProfile, updateMyProfile, uploadAvatar
+  (multipart FormData), updateFcmToken.
+- Screens: Login (RHF validation, trim-tolerant email, error surfacing),
+  Register (+ verify-email notice), ForgotPassword (no account enumeration),
+  LockScreen (biometric gate), Profile (avatar, role/verified badges, biometric
+  toggle, sign out w/ confirm), EditProfile (avatar picker + form).
+- Biometric: `lib/biometric.ts` (expo-local-authentication). Opt-in flag in
+  secure store. A persisted session is gated behind the LockScreen on launch
+  when enabled — passwords are never stored.
+- `authStore`: shared `AuthUser` type, `locked` state + `unlock()`; `hydrate()`
+  reads the biometric flag and sets `locked`.
+- UI: `Avatar` (image or initials), `lib/media.ts` (resolve relative media URLs),
+  `components/forms/FormField` (RHF Controller + Input).
+- Navigation: AuthStack (Login/Register/ForgotPassword); Profile tab →
+  ProfileStack (ProfileHome/EditProfile); RootNavigator renders LockScreen.
+- Tests (21 total): authService, userService, LoginScreen, authStore, Button.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 21 tests ✅, Metro bundle ✅,
+  CI ✅.
+
+## Next: Phase 3 — Organizations (mobile)
+
+OrgListScreen (user's orgs + role badges), OrgDetailScreen (info + members),
+invitation deep links via linking config; orgService.

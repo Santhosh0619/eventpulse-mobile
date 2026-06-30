@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
 import { HomeScreen } from '@/screens/home/HomeScreen'
-import { ProfileScreen } from '@/screens/profile/ProfileScreen'
 import { MyTicketsScreen } from '@/screens/tickets/MyTicketsScreen'
 import { colors } from '@/theme'
+
+import { ProfileStack } from './ProfileStack'
 
 import type { MainTabsParamList } from './types'
 
@@ -46,7 +47,11 @@ export function MainTabs() {
         component={MyTicketsScreen}
         options={{ title: 'My Tickets' }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   )
 }

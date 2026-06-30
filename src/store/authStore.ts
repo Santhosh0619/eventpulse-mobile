@@ -1,15 +1,10 @@
 import { create } from 'zustand'
 
+import { biometric } from '@/lib/biometric'
 import { secureStorage, STORAGE_KEYS } from '@/lib/secureStorage'
+import type { AuthUser } from '@/types/user'
 
-/** The authenticated user's account (mirrors the backend UserRead schema). */
-export interface AuthUser {
-  id: string
-  email: string
-  role: string
-  is_active: boolean
-  is_verified: boolean
-}
+export type { AuthUser }
 
 interface AuthState {
   user: AuthUser | null
@@ -17,10 +12,13 @@ interface AuthState {
   refreshToken: string | null
   /** True until tokens have been read back from secure storage on launch. */
   isHydrating: boolean
+  /** True when a persisted session is loaded but gated behind biometric unlock. */
+  locked: boolean
   setSession: (tokens: { access: string; refresh: string }) => void
   setUser: (user: AuthUser | null) => void
   clear: () => void
   hydrate: () => Promise<void>
+  unlock: () => void
   isAuthenticated: () => boolean
 }
 
@@ -35,6 +33,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
   refreshToken: null,
   isHydrating: true,
+  locked: false,
 
   setSession: ({ access, refresh }) => {
     set({ accessToken: access, refreshToken: refresh })
@@ -45,24 +44,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setUser: (user) => set({ user }),
 
   clear: () => {
-    set({ user: null, accessToken: null, refreshToken: null })
+    set({ user: null, accessToken: null, refreshToken: null, locked: false })
     void secureStorage.remove(STORAGE_KEYS.accessToken)
     void secureStorage.remove(STORAGE_KEYS.refreshToken)
+    // Drop the biometric preference too, so a sign-out fully resets the device.
+    void secureStorage.remove(STORAGE_KEYS.biometricEnabled)
   },
 
   hydrate: async () => {
     try {
-      const [access, refresh] = await Promise.all([
+      const [access, refresh, biometricFlag] = await Promise.all([
         secureStorage.get(STORAGE_KEYS.accessToken),
         secureStorage.get(STORAGE_KEYS.refreshToken),
+        secureStorage.get(STORAGE_KEYS.biometricEnabled),
       ])
       if (access && refresh) {
-        set({ accessToken: access, refreshToken: refresh })
+        // A persisted session exists. Gate it behind biometric unlock only if
+        // the user opted in AND a usable sensor is still enrolled — otherwise a
+        // removed/disabled sensor would strand the session. Else auto-login.
+        const lock = biometricFlag === '1' && (await biometric.isAvailable())
+        set({ accessToken: access, refreshToken: refresh, locked: lock })
       }
     } finally {
       set({ isHydrating: false })
     }
   },
+
+  unlock: () => set({ locked: false }),
 
   isAuthenticated: () => Boolean(get().accessToken),
 }))
