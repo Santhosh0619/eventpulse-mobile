@@ -1,4 +1,14 @@
-import { formatEventRange, formatTime } from '@/lib/datetime'
+import { formatCountdown, formatEventRange, formatTime } from '@/lib/datetime'
+
+describe('formatCountdown', () => {
+  it('formats milliseconds as mm:ss', () => {
+    expect(formatCountdown(90_000)).toBe('01:30')
+    expect(formatCountdown(5_000)).toBe('00:05')
+  })
+  it('clamps negatives to 00:00', () => {
+    expect(formatCountdown(-1000)).toBe('00:00')
+  })
+})
 
 // Use local (no-Z) ISO strings so formatting is timezone-stable in CI.
 describe('datetime helpers', () => {
