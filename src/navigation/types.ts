@@ -49,6 +49,7 @@ export type HomeStackParamList = CheckoutScreens &
     HomeMain: undefined
     EventDetail: EventDetailParams
     CategoryEvents: { categoryId: string; name: string }
+    NotificationCenter: undefined
   }
 
 /** Discover tab stack. */

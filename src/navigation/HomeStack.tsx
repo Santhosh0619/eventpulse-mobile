@@ -1,5 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
+import { NotificationBell } from '@/components/NotificationBell'
 import { ConfirmationScreen } from '@/screens/checkout/ConfirmationScreen'
 import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
 import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
@@ -8,6 +9,7 @@ import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { ReviewFormScreen } from '@/screens/events/ReviewFormScreen'
 import { ReviewsScreen } from '@/screens/events/ReviewsScreen'
 import { HomeScreen } from '@/screens/home/HomeScreen'
+import { NotificationCenterScreen } from '@/screens/notifications/NotificationCenterScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
 import { QRFullScreen } from '@/screens/tickets/QRFullScreen'
 import { colors } from '@/theme'
@@ -27,7 +29,14 @@ export function HomeStack() {
       <Stack.Screen
         name="HomeMain"
         component={HomeScreen}
-        options={{ title: 'EventPulse' }}
+        options={({ navigation }) => ({
+          title: 'EventPulse',
+          headerRight: () => (
+            <NotificationBell
+              onPress={() => navigation.navigate('NotificationCenter')}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="EventDetail"
@@ -77,6 +86,11 @@ export function HomeStack() {
         name="ReviewForm"
         component={ReviewFormScreen}
         options={{ title: 'Write a Review' }}
+      />
+      <Stack.Screen
+        name="NotificationCenter"
+        component={NotificationCenterScreen}
+        options={{ title: 'Notifications' }}
       />
     </Stack.Navigator>
   )

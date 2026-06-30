@@ -199,9 +199,28 @@ Branch `feature/reviews`.
 - Tests (73 total): reviewService, ReviewFormScreen (validation + submit).
 - **Verification:** typecheck ✅, lint ✅, format ✅, 73 tests ✅, Metro bundle ✅.
 
-## Next: Phase 7b — Notifications (mobile)
+## Phase 7b — Notifications ✅ COMPLETE (PR #8)
 
-notificationService (list, unreadCount, markRead, markAllRead); push via
-expo-notifications (permission, register FCM token via PUT /users/me/fcm-token,
-foreground/response handlers); NotificationCenterScreen (read/unread, swipe/tap to
-read), tab badge (useNotificationStore), deep-link from notification tap.
+Branch `feature/notifications`.
+
+- `services/notificationService.ts`: list, unreadCount, markRead, markAllRead.
+  `types/notification.ts`.
+- `lib/notifications.ts`: foreground handler + `registerForPush()` (permission →
+  device push token → `userService.updateFcmToken`; best-effort, never throws).
+- `screens/notifications/NotificationCenterScreen`: list with read/unread styling,
+  tap to mark read, mark-all-read, pull-to-refresh; syncs the unread badge.
+- `components/NotificationBell`: header bell + unread badge (useNotificationStore).
+- MainTabs: registers push, seeds unread count, foreground-received listener
+  (re-counts), tap-response listener → opens NotificationCenter via navigationRef.
+- Home header shows the bell → NotificationCenter (registered in HomeStack).
+- Tests (79 total): notificationService, NotificationCenter (mark read / mark all).
+  jest mocks expo-notifications.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 79 tests ✅, Metro bundle ✅.
+
+**Phase 7 COMPLETE (reviews + notifications).**
+
+## Next: Phase 8 — Recommendations & Preferences (mobile)
+
+"For You" recommendations on Home (recommendationService); PreferencesScreen
+(category multi-select, location radius, price range) under Profile; "Similar
+events" on EventDetail. (Analytics/admin are organizer/web-only.)

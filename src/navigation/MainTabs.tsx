@@ -1,10 +1,16 @@
 import { Ionicons } from '@expo/vector-icons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import * as Notifications from 'expo-notifications'
+import { useEffect } from 'react'
 
+import { registerForPush } from '@/lib/notifications'
+import { notificationService } from '@/services/notificationService'
+import { useNotificationStore } from '@/store/notificationStore'
 import { colors } from '@/theme'
 
 import { DiscoverStack } from './DiscoverStack'
 import { HomeStack } from './HomeStack'
+import { navigationRef } from './navigationRef'
 import { ProfileStack } from './ProfileStack'
 import { TicketsStack } from './TicketsStack'
 
@@ -27,6 +33,37 @@ function makeTabBarIcon(routeName: keyof MainTabsParamList) {
 }
 
 export function MainTabs() {
+  const setUnreadCount = useNotificationStore((s) => s.setUnreadCount)
+
+  useEffect(() => {
+    // Register for push and seed the unread badge once the tabs mount (authed).
+    void registerForPush()
+    const loadCount = () =>
+      notificationService
+        .unreadCount()
+        .then(setUnreadCount)
+        .catch(() => {})
+    void loadCount()
+
+    // A push arriving in the foreground bumps the badge.
+    const received = Notifications.addNotificationReceivedListener(loadCount)
+    // Tapping a push opens the notification center.
+    const responded = Notifications.addNotificationResponseReceivedListener(
+      () => {
+        if (navigationRef.isReady()) {
+          navigationRef.navigate('Main', {
+            screen: 'Home',
+            params: { screen: 'NotificationCenter' },
+          })
+        }
+      },
+    )
+    return () => {
+      received.remove()
+      responded.remove()
+    }
+  }, [setUnreadCount])
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
