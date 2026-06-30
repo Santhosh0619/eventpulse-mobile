@@ -165,10 +165,29 @@ Branch `feature/payments`. Stripe card payment for pending orders.
   (fresh refs each render caused an infinite effect loop / OOM — fixed).
 - **Verification:** typecheck ✅, lint ✅, format ✅, 63 tests ✅, Metro bundle ✅.
 
-## Next: Phase 6b — Tickets QR + Staff Check-in (mobile)
+## Phase 6b — Tickets QR + Staff Check-in ✅ COMPLETE (PR #6)
 
-attendeeService (listMine / checkIn / getStats / listForEvent — backend
-`GET /users/me/attendees` added in backend PR #21); QRFullScreen (react-native-qrcode-svg
+Branch `feature/checkin`. Uses backend `GET /users/me/attendees` (backend PR #21).
 
-- expo-brightness) reached from OrderDetail tickets list; staff QRScannerScreen
-  (expo-camera) + CheckInDashboardScreen (auto-refresh 5s), entry from Profile.
+- `services/attendeeService.ts`: listMine(eventId?), checkIn(ticketCode),
+  getStats(eventId), listForEvent(eventId). `types/attendee.ts`.
+- `screens/tickets/QRFullScreen`: ticket QR (react-native-qrcode-svg), boosts
+  brightness to max while visible (expo-brightness), restores on exit.
+- OrderDetail (confirmed): lists the buyer's tickets → tap → QRFull; "Used" badge
+  for checked-in tickets.
+- `screens/staff/QRScannerScreen`: expo-camera scans QR → checkIn + haptic, result
+  sheet, "Scan next" + dashboard link.
+- `screens/staff/CheckInDashboardScreen`: stats + rate bar + recent check-ins,
+  auto-refresh every 5s.
+- Navigation: QRFull in Home/Discover/Tickets stacks; QRScanner + CheckInDashboard
+  in ProfileStack; "Staff check-in" entry on ProfileScreen.
+- Tests (68 total): attendeeService, CheckInDashboard. jest mocks expo-camera +
+  expo-brightness.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 68 tests ✅, Metro bundle ✅.
+
+## Next: Phase 7 — Reviews & Notifications (mobile)
+
+Review submission + reviews list on EventDetail (reviewService); push
+notifications (expo-notifications + FCM token via PUT /users/me/fcm-token),
+NotificationCenterScreen (read/unread, swipe), tab badge, deep-link from tap;
+notificationService.

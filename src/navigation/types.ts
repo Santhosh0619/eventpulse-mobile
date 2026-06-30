@@ -14,6 +14,8 @@ export type ProfileStackParamList = {
   Organizations: undefined
   OrgDetail: { orgId: string; name?: string }
   AcceptInvitation: { token: string }
+  QRScanner: undefined
+  CheckInDashboard: { eventId: string; eventTitle?: string }
 }
 
 /** Params for the EventDetail screen, shared by every stack that hosts it. */
@@ -32,6 +34,7 @@ export type CheckoutScreens = {
   Confirmation: { orderId: string }
   OrderDetail: { orderId: string; justPaid?: boolean }
   Payment: { orderId: string }
+  QRFull: { ticketCode: string; name?: string; eventTitle?: string }
 }
 
 /** Home tab stack. */
@@ -53,6 +56,7 @@ export type TicketsStackParamList = {
   TicketsMain: undefined
   OrderDetail: { orderId: string; justPaid?: boolean }
   Payment: { orderId: string }
+  QRFull: { ticketCode: string; name?: string; eventTitle?: string }
 }
 
 /** Bottom tabs — the signed-in app shell. */

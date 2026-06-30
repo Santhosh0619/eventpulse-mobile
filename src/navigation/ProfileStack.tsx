@@ -5,6 +5,8 @@ import { OrgDetailScreen } from '@/screens/organizations/OrgDetailScreen'
 import { OrgListScreen } from '@/screens/organizations/OrgListScreen'
 import { EditProfileScreen } from '@/screens/profile/EditProfileScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
+import { CheckInDashboardScreen } from '@/screens/staff/CheckInDashboardScreen'
+import { QRScannerScreen } from '@/screens/staff/QRScannerScreen'
 import { colors } from '@/theme'
 
 import type { ProfileStackParamList } from './types'
@@ -45,6 +47,18 @@ export function ProfileStack() {
         name="AcceptInvitation"
         component={AcceptInvitationScreen}
         options={{ title: 'Invitation' }}
+      />
+      <Stack.Screen
+        name="QRScanner"
+        component={QRScannerScreen}
+        options={{ title: 'Scan Tickets' }}
+      />
+      <Stack.Screen
+        name="CheckInDashboard"
+        component={CheckInDashboardScreen}
+        options={({ route }) => ({
+          title: route.params.eventTitle ?? 'Check-in',
+        })}
       />
     </Stack.Navigator>
   )
