@@ -159,6 +159,19 @@ export function EventDetailScreen() {
             </MapView>
           </View>
         ) : null}
+
+        <View style={styles.section}>
+          <Button
+            title="Ratings & reviews"
+            variant="outline"
+            onPress={() =>
+              navigation.navigate('Reviews', {
+                eventId: event.id,
+                eventTitle: event.title,
+              })
+            }
+          />
+        </View>
       </ScrollView>
 
       <View style={styles.footer}>

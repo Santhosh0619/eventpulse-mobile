@@ -37,19 +37,27 @@ export type CheckoutScreens = {
   QRFull: { ticketCode: string; name?: string; eventTitle?: string }
 }
 
-/** Home tab stack. */
-export type HomeStackParamList = CheckoutScreens & {
-  HomeMain: undefined
-  EventDetail: EventDetailParams
-  CategoryEvents: { categoryId: string; name: string }
+/** Review screens, shared by the stacks that host EventDetail. */
+export type ReviewScreens = {
+  Reviews: { eventId: string; eventTitle?: string }
+  ReviewForm: { eventId: string }
 }
 
+/** Home tab stack. */
+export type HomeStackParamList = CheckoutScreens &
+  ReviewScreens & {
+    HomeMain: undefined
+    EventDetail: EventDetailParams
+    CategoryEvents: { categoryId: string; name: string }
+  }
+
 /** Discover tab stack. */
-export type DiscoverStackParamList = CheckoutScreens & {
-  DiscoverMain: undefined
-  MapDiscover: undefined
-  EventDetail: EventDetailParams
-}
+export type DiscoverStackParamList = CheckoutScreens &
+  ReviewScreens & {
+    DiscoverMain: undefined
+    MapDiscover: undefined
+    EventDetail: EventDetailParams
+  }
 
 /** Tickets tab stack. */
 export type TicketsStackParamList = {

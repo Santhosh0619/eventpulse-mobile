@@ -8,6 +8,8 @@ import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
 import { MapDiscoverScreen } from '@/screens/discover/MapDiscoverScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
+import { ReviewFormScreen } from '@/screens/events/ReviewFormScreen'
+import { ReviewsScreen } from '@/screens/events/ReviewsScreen'
 import { OrderDetailScreen } from '@/screens/tickets/OrderDetailScreen'
 import { QRFullScreen } from '@/screens/tickets/QRFullScreen'
 import { colors, spacing } from '@/theme'
@@ -78,6 +80,16 @@ export function DiscoverStack() {
         name="QRFull"
         component={QRFullScreen}
         options={{ title: 'Ticket' }}
+      />
+      <Stack.Screen
+        name="Reviews"
+        component={ReviewsScreen}
+        options={{ title: 'Reviews' }}
+      />
+      <Stack.Screen
+        name="ReviewForm"
+        component={ReviewFormScreen}
+        options={{ title: 'Write a Review' }}
       />
     </Stack.Navigator>
   )
