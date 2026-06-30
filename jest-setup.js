@@ -39,6 +39,21 @@ jest.mock('expo-brightness', () => ({
   setBrightnessAsync: jest.fn(() => Promise.resolve()),
 }))
 
+jest.mock('expo-notifications', () => ({
+  setNotificationHandler: jest.fn(),
+  getPermissionsAsync: jest.fn(() => Promise.resolve({ granted: true })),
+  requestPermissionsAsync: jest.fn(() => Promise.resolve({ granted: true })),
+  getDevicePushTokenAsync: jest.fn(() =>
+    Promise.resolve({ type: 'android', data: 'device-token' }),
+  ),
+  setNotificationChannelAsync: jest.fn(() => Promise.resolve()),
+  addNotificationReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  addNotificationResponseReceivedListener: jest.fn(() => ({
+    remove: jest.fn(),
+  })),
+  AndroidImportance: { DEFAULT: 3 },
+}))
+
 jest.mock('expo-camera', () => {
   const React = require('react')
   const { View } = require('react-native')
