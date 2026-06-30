@@ -9,6 +9,7 @@ import { EventCard } from '@/components/events/EventCard'
 import { EmptyState, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { eventService } from '@/services/eventService'
+import { recommendationService } from '@/services/recommendationService'
 import type { Category, Event } from '@/types/event'
 import type { HomeStackParamList } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
@@ -23,10 +24,12 @@ export function HomeScreen() {
         eventService.featured().catch(() => []),
         eventService.listCategories().catch(() => []),
         eventService.search({ limit: 10 }),
-      ]).then(([featured, categories, upcoming]) => ({
+        recommendationService.personalized(10).catch(() => []),
+      ]).then(([featured, categories, upcoming, recommended]) => ({
         featured,
         categories,
         upcoming: upcoming.items,
+        recommended: recommended.map((r) => r.event),
       })),
     [],
   )
@@ -66,11 +69,31 @@ export function HomeScreen() {
     )
   }
 
-  const { featured, categories, upcoming } = data
+  const { featured, categories, upcoming, recommended } = data
 
   return (
     <SafeAreaView style={styles.safe} edges={['left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
+        {recommended.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.heading}>For you</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.carousel}
+            >
+              {recommended.map((e) => (
+                <EventCard
+                  key={e.id}
+                  event={e}
+                  variant="carousel"
+                  onPress={openEvent}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        ) : null}
+
         {featured.length > 0 ? (
           <View style={styles.section}>
             <Text style={styles.heading}>Featured</Text>

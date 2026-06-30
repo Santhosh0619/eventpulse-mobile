@@ -6,6 +6,7 @@ import { Image } from 'expo-image'
 import { useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
+import { EventCard } from '@/components/events/EventCard'
 import { TicketSelector } from '@/components/tickets/TicketSelector'
 import { MapView, Marker, mapsAvailable } from '@/lib/maps'
 import { Badge, Button, EmptyState, Spinner } from '@/components/ui'
@@ -13,6 +14,8 @@ import { useAsync } from '@/hooks/useAsync'
 import { formatEventRange } from '@/lib/datetime'
 import { mediaUrl } from '@/lib/media'
 import { eventService } from '@/services/eventService'
+import { recommendationService } from '@/services/recommendationService'
+import type { Event } from '@/types/event'
 import type { HomeStackParamList } from '@/navigation/types'
 import { colors, fontSizes, radii, spacing } from '@/theme'
 
@@ -29,6 +32,15 @@ export function EventDetailScreen() {
         eventService.getById(eventId),
         eventService.getMedia(eventId).catch(() => []),
       ]).then(([event, media]) => ({ event, media })),
+    [eventId],
+  )
+
+  const { data: similar } = useAsync(
+    () =>
+      recommendationService
+        .similar(eventId)
+        .then((recs) => recs.map((r) => r.event))
+        .catch(() => []),
     [eventId],
   )
 
@@ -172,6 +184,33 @@ export function EventDetailScreen() {
             }
           />
         </View>
+
+        {similar && similar.length > 0 ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Similar events</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.similar}
+            >
+              {similar
+                .filter((s: Event) => s.id !== event.id)
+                .map((s: Event) => (
+                  <EventCard
+                    key={s.id}
+                    event={s}
+                    variant="carousel"
+                    onPress={(e) =>
+                      navigation.push('EventDetail', {
+                        eventId: e.id,
+                        title: e.title,
+                      })
+                    }
+                  />
+                ))}
+            </ScrollView>
+          </View>
+        ) : null}
       </ScrollView>
 
       <View style={styles.footer}>
@@ -226,6 +265,7 @@ const styles = StyleSheet.create({
   },
   body: { fontSize: fontSizes.md, color: colors.text, lineHeight: 24 },
   gallery: { gap: spacing.sm, paddingRight: spacing.lg },
+  similar: { gap: spacing.md, paddingRight: spacing.lg },
   galleryImage: {
     width: 140,
     height: 100,

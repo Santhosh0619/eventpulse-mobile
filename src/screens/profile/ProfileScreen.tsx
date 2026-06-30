@@ -128,6 +128,11 @@ export function ProfileScreen() {
           onPress={() => navigation.navigate('EditProfile')}
         />
         <Button
+          title="Preferences"
+          variant="outline"
+          onPress={() => navigation.navigate('Preferences')}
+        />
+        <Button
           title="My organizations"
           variant="outline"
           onPress={() => navigation.navigate('Organizations')}

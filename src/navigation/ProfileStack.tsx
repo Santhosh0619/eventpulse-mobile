@@ -4,6 +4,7 @@ import { AcceptInvitationScreen } from '@/screens/organizations/AcceptInvitation
 import { OrgDetailScreen } from '@/screens/organizations/OrgDetailScreen'
 import { OrgListScreen } from '@/screens/organizations/OrgListScreen'
 import { EditProfileScreen } from '@/screens/profile/EditProfileScreen'
+import { PreferencesScreen } from '@/screens/profile/PreferencesScreen'
 import { ProfileScreen } from '@/screens/profile/ProfileScreen'
 import { CheckInDashboardScreen } from '@/screens/staff/CheckInDashboardScreen'
 import { QRScannerScreen } from '@/screens/staff/QRScannerScreen'
@@ -30,6 +31,11 @@ export function ProfileStack() {
         name="EditProfile"
         component={EditProfileScreen}
         options={{ title: 'Edit Profile' }}
+      />
+      <Stack.Screen
+        name="Preferences"
+        component={PreferencesScreen}
+        options={{ title: 'Preferences' }}
       />
       <Stack.Screen
         name="Organizations"
