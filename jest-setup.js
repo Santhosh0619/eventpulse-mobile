@@ -34,6 +34,15 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }))
 
+jest.mock('@react-native-community/slider', () => {
+  const React = require('react')
+  const { View } = require('react-native')
+  return {
+    __esModule: true,
+    default: (props) => React.createElement(View, props),
+  }
+})
+
 jest.mock('expo-brightness', () => ({
   getBrightnessAsync: jest.fn(() => Promise.resolve(0.5)),
   setBrightnessAsync: jest.fn(() => Promise.resolve()),

@@ -219,8 +219,22 @@ Branch `feature/notifications`.
 
 **Phase 7 COMPLETE (reviews + notifications).**
 
-## Next: Phase 8 — Recommendations & Preferences (mobile)
+## Phase 8 — Recommendations & Preferences ✅ COMPLETE (PR #9)
 
-"For You" recommendations on Home (recommendationService); PreferencesScreen
-(category multi-select, location radius, price range) under Profile; "Similar
-events" on EventDetail. (Analytics/admin are organizer/web-only.)
+Branch `feature/recommendations`. (Analytics/admin are organizer/web-only — skipped.)
+
+- `services/recommendationService.ts`: personalized(limit), similar(eventId, limit)
+  → `{ event, score }[]`.
+- Home: "For You" carousel (personalized recommendations).
+- EventDetail: "Similar events" carousel (pushes EventDetail recursively).
+- `screens/profile/PreferencesScreen`: category multi-select + distance slider +
+  max-price slider (@react-native-community/slider); saves to
+  `profile.preferences` via `userService.updateMyProfile`. Entry on Profile.
+- Tests (82 total): recommendationService, PreferencesScreen. jest mocks slider.
+- **Verification:** typecheck ✅, lint ✅, format ✅, 82 tests ✅, Metro bundle ✅.
+
+## Next: Phase 9 — Performance & Polish (mobile)
+
+FlatList tuning (windowSize/removeClippedSubviews/getItemLayout where feasible),
+offline cache of events/tickets (AsyncStorage), image caching (expo-image already
+caches), error boundaries, final pass. App is otherwise feature-complete.
