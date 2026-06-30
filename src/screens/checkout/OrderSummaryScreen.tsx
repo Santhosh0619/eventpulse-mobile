@@ -8,13 +8,13 @@ import { Button, Card, Screen } from '@/components/ui'
 import { formatMoney, sumSelections } from '@/lib/money'
 import type { ApiError } from '@/services/api'
 import { orderService } from '@/services/orderService'
-import type { HomeStackParamList } from '@/navigation/types'
+import type { CheckoutScreens } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
 
 export function OrderSummaryScreen() {
-  const route = useRoute<RouteProp<HomeStackParamList, 'OrderSummary'>>()
+  const route = useRoute<RouteProp<CheckoutScreens, 'OrderSummary'>>()
   const navigation =
-    useNavigation<StackNavigationProp<HomeStackParamList, 'OrderSummary'>>()
+    useNavigation<StackNavigationProp<CheckoutScreens, 'OrderSummary'>>()
   const { eventId, eventTitle, selections } = route.params
 
   const [submitting, setSubmitting] = useState(false)

@@ -39,10 +39,15 @@ export function OrderDetailScreen() {
     ? parseISO(order.expires_at).getTime()
     : null
 
-  // Tick once a second while a pending order is counting down to expiry.
+  // Tick once a second while a pending order counts down to expiry, then stop
+  // (no point re-rendering a static "expired" view forever).
   useEffect(() => {
     if (!pending || expiresAt == null) return
-    const id = setInterval(() => setNow(Date.now()), 1000)
+    const id = setInterval(() => {
+      const t = Date.now()
+      setNow(t)
+      if (t >= expiresAt) clearInterval(id)
+    }, 1000)
     return () => clearInterval(id)
   }, [pending, expiresAt])
 

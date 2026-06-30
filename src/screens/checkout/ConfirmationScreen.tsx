@@ -8,13 +8,13 @@ import { Button, EmptyState, Screen, Spinner } from '@/components/ui'
 import { useAsync } from '@/hooks/useAsync'
 import { formatMoney } from '@/lib/money'
 import { orderService } from '@/services/orderService'
-import type { HomeStackParamList } from '@/navigation/types'
+import type { CheckoutScreens } from '@/navigation/types'
 import { colors, fontSizes, spacing } from '@/theme'
 
 export function ConfirmationScreen() {
-  const route = useRoute<RouteProp<HomeStackParamList, 'Confirmation'>>()
+  const route = useRoute<RouteProp<CheckoutScreens, 'Confirmation'>>()
   const navigation =
-    useNavigation<StackNavigationProp<HomeStackParamList, 'Confirmation'>>()
+    useNavigation<StackNavigationProp<CheckoutScreens, 'Confirmation'>>()
   const { orderId } = route.params
 
   const {

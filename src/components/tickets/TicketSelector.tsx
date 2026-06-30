@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 import { BottomSheet, Button, Spinner } from '@/components/ui'
@@ -28,6 +28,12 @@ export function TicketSelector({
   )
   const [quantities, setQuantities] = useState<Record<string, number>>({})
 
+  // Start fresh each time the sheet opens (or the event changes) so quantities
+  // never carry over between events or stale selections.
+  useEffect(() => {
+    if (visible) setQuantities({})
+  }, [visible, eventId])
+
   const tiers = useMemo(() => data?.tiers ?? [], [data])
 
   const setQty = (tier: TierAvailability, delta: number) => {
@@ -42,14 +48,20 @@ export function TicketSelector({
   const selections: TicketSelection[] = useMemo(
     () =>
       tiers
-        .filter((t) => (quantities[t.ticket_type_id] ?? 0) > 0)
-        .map((t) => ({
-          ticketTypeId: t.ticket_type_id,
-          name: t.name,
-          price: t.price,
-          currency: t.currency,
-          quantity: quantities[t.ticket_type_id],
-        })),
+        .map((t) => {
+          // Clamp against the latest availability so a stale quantity can never
+          // exceed what's actually on sale.
+          const cap = Math.min(t.quantity_available, 10)
+          const quantity = Math.min(quantities[t.ticket_type_id] ?? 0, cap)
+          return {
+            ticketTypeId: t.ticket_type_id,
+            name: t.name,
+            price: t.price,
+            currency: t.currency,
+            quantity,
+          }
+        })
+        .filter((s) => s.quantity > 0),
     [tiers, quantities],
   )
 
