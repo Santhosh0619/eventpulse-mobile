@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons'
 import type { RouteProp } from '@react-navigation/native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import type { StackNavigationProp } from '@react-navigation/stack'
-import { useStripe } from '@stripe/stripe-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { PaymentSheetError, useStripe } from '@stripe/stripe-react-native'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 import { Button, Screen, Spinner } from '@/components/ui'
@@ -42,17 +42,28 @@ export function PaymentScreen() {
 
   const configured = Boolean(env.stripePublishableKey)
 
+  // Guard async setState/navigation: the user can back out mid-flight.
+  const mounted = useRef(true)
+  useEffect(
+    () => () => {
+      mounted.current = false
+    },
+    [],
+  )
+
   const prepare = useCallback(async () => {
     setPhase('preparing')
     setError(null)
     try {
       const intent = await paymentService.createIntent(orderId)
+      if (!mounted.current) return
       setLabel(formatMoney(intent.amount, intent.currency))
       const { error: initError } = await initPaymentSheet({
         merchantDisplayName: 'EventPulse',
         paymentIntentClientSecret: intent.client_secret,
         returnURL: 'eventpulse://payment-complete',
       })
+      if (!mounted.current) return
       if (initError) {
         setError(initError.message)
         setPhase('error')
@@ -60,6 +71,7 @@ export function PaymentScreen() {
         setPhase('ready')
       }
     } catch (e) {
+      if (!mounted.current) return
       setError((e as ApiError).message ?? 'Could not start payment.')
       setPhase('error')
     }
@@ -69,21 +81,35 @@ export function PaymentScreen() {
     if (configured) void prepare()
   }, [configured, prepare])
 
+  // While paying/confirming, block back navigation so the flow can't be
+  // interrupted mid-payment (mirrors the Confirmation screen).
+  const locked = phase === 'paying' || phase === 'confirming'
+  useEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: !locked,
+      headerLeft: locked ? () => null : undefined,
+    })
+  }, [navigation, locked])
+
   const pay = async () => {
+    if (phase !== 'ready') return
+    setError(null)
     setPhase('paying')
     const { error: payError } = await presentPaymentSheet()
+    if (!mounted.current) return
     if (payError) {
       // User cancelled or the card failed; let them retry.
-      if (payError.code !== 'Canceled') setError(payError.message)
+      if (payError.code !== PaymentSheetError.Canceled)
+        setError(payError.message)
       setPhase('ready')
       return
     }
     // Payment succeeded on Stripe; the order confirms via webhook (async).
     setPhase('confirming')
-    const confirmed = await waitForConfirmation(orderId)
+    await waitForConfirmation(orderId)
+    if (!mounted.current) return
     setPhase('done')
-    navigation.replace('OrderDetail', { orderId })
-    return confirmed
+    navigation.replace('OrderDetail', { orderId, justPaid: true })
   }
 
   if (!configured) {

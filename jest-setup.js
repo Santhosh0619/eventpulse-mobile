@@ -46,6 +46,7 @@ jest.mock('@stripe/stripe-react-native', () => {
   return {
     StripeProvider: ({ children }) => children,
     useStripe: () => sheet,
+    PaymentSheetError: { Canceled: 'Canceled', Failed: 'Failed' },
   }
 })
 

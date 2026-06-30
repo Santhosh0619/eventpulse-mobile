@@ -30,7 +30,7 @@ export type CheckoutScreens = {
     selections: import('@/types/order').TicketSelection[]
   }
   Confirmation: { orderId: string }
-  OrderDetail: { orderId: string }
+  OrderDetail: { orderId: string; justPaid?: boolean }
   Payment: { orderId: string }
 }
 
@@ -51,7 +51,7 @@ export type DiscoverStackParamList = CheckoutScreens & {
 /** Tickets tab stack. */
 export type TicketsStackParamList = {
   TicketsMain: undefined
-  OrderDetail: { orderId: string }
+  OrderDetail: { orderId: string; justPaid?: boolean }
   Payment: { orderId: string }
 }
 

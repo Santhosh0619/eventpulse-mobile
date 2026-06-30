@@ -27,7 +27,7 @@ jest.mock('@/services/orderService', () => ({
 const mockReplace = jest.fn()
 jest.mock('@react-navigation/native', () => ({
   useRoute: () => ({ params: { orderId: 'ord1' } }),
-  useNavigation: () => ({ replace: mockReplace }),
+  useNavigation: () => ({ replace: mockReplace, setOptions: jest.fn() }),
 }))
 
 const mockCreateIntent = paymentService.createIntent as jest.Mock
@@ -55,6 +55,7 @@ describe('PaymentScreen', () => {
     await waitFor(() =>
       expect(mockReplace).toHaveBeenCalledWith('OrderDetail', {
         orderId: 'ord1',
+        justPaid: true,
       }),
     )
   })

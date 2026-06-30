@@ -26,7 +26,7 @@ export function OrderDetailScreen() {
   const route = useRoute<RouteProp<TicketsStackParamList, 'OrderDetail'>>()
   const navigation =
     useNavigation<StackNavigationProp<TicketsStackParamList, 'OrderDetail'>>()
-  const { orderId } = route.params
+  const { orderId, justPaid } = route.params
 
   const {
     data: order,
@@ -112,7 +112,13 @@ export function OrderDetailScreen() {
         Placed {formatDateLong(order.created_at)}
       </Text>
 
-      {pending && remaining != null ? (
+      {pending && justPaid ? (
+        <Card style={styles.countdownCard}>
+          <Text style={styles.countdownLabel}>
+            Payment received — confirming your tickets…
+          </Text>
+        </Card>
+      ) : pending && remaining != null ? (
         <Card style={expired ? styles.expiredCard : styles.countdownCard}>
           <Text style={styles.countdownLabel}>
             {expired ? 'This order has expired' : 'Complete payment within'}
@@ -140,7 +146,7 @@ export function OrderDetailScreen() {
         </View>
       </Card>
 
-      {pending && !expired ? (
+      {pending && !expired && !justPaid ? (
         <View style={styles.actions}>
           <Button
             title="Pay now"
