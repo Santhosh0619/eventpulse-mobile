@@ -264,3 +264,14 @@ part of the attendee/staff mobile app.
 **Deferred (out of in-app scope):** EAS production build/submit pipelines, OTA
 (EAS Update), Sentry, and store assets — deployment/ops concerns, mirroring the
 backend's deferred infra.
+
+## Deployment phase (21 ideas)
+
+### Idea 14 — AI Recommendations (Gemini) ✅ COMPLETE
+- recommendationService: added `forMe` (GET /recommendations/for-me) and
+  `similarAi` (GET /events/{id}/similar) + `AiRecommendedEvent` type. Heuristic
+  `personalized`/`similar` kept for reference.
+- EventCard: optional `caption` prop renders the AI reason with a ✨ sparkles icon.
+- HomeScreen "For you" now uses `forMe` and shows the reason per card.
+- EventDetailScreen "Similar events" now uses `similarAi` and shows the reason.
+- 90 tests pass (was 87).

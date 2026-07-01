@@ -13,12 +13,15 @@ interface EventCardProps {
   onPress: (event: Event) => void
   /** Compact horizontal variant for carousels. */
   variant?: 'list' | 'carousel'
+  /** Optional AI rationale shown beneath the card details. */
+  caption?: string | null
 }
 
 export function EventCard({
   event,
   onPress,
   variant = 'list',
+  caption,
 }: EventCardProps) {
   const carousel = variant === 'carousel'
   const location = [event.venue_name, event.city].filter(Boolean).join(', ')
@@ -65,6 +68,14 @@ export function EventCard({
             </Text>
           </View>
         ) : null}
+        {caption ? (
+          <View style={styles.captionRow}>
+            <Ionicons name="sparkles" size={13} color={colors.primary} />
+            <Text style={styles.caption} numberOfLines={2}>
+              {caption}
+            </Text>
+          </View>
+        ) : null}
       </View>
     </Pressable>
   )
@@ -86,4 +97,16 @@ const styles = StyleSheet.create({
   title: { fontSize: fontSizes.lg, fontWeight: '700', color: colors.text },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   meta: { flex: 1, fontSize: fontSizes.sm, color: colors.textMuted },
+  captionRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  caption: {
+    flex: 1,
+    fontSize: fontSizes.sm,
+    fontStyle: 'italic',
+    color: colors.primary,
+  },
 })
