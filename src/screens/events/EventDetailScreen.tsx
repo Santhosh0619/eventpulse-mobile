@@ -15,7 +15,6 @@ import { formatEventRange } from '@/lib/datetime'
 import { mediaUrl } from '@/lib/media'
 import { eventService } from '@/services/eventService'
 import { recommendationService } from '@/services/recommendationService'
-import type { Event } from '@/types/event'
 import type { HomeStackParamList } from '@/navigation/types'
 import { colors, fontSizes, radii, spacing } from '@/theme'
 
@@ -36,11 +35,7 @@ export function EventDetailScreen() {
   )
 
   const { data: similar } = useAsync(
-    () =>
-      recommendationService
-        .similar(eventId)
-        .then((recs) => recs.map((r) => r.event))
-        .catch(() => []),
+    () => recommendationService.similarAi(eventId, 6).catch(() => []),
     [eventId],
   )
 
@@ -194,12 +189,13 @@ export function EventDetailScreen() {
               contentContainerStyle={styles.similar}
             >
               {similar
-                .filter((s: Event) => s.id !== event.id)
-                .map((s: Event) => (
+                .filter((s) => s.event.id !== event.id)
+                .map((s) => (
                   <EventCard
-                    key={s.id}
-                    event={s}
+                    key={s.event.id}
+                    event={s.event}
                     variant="carousel"
+                    caption={s.reason}
                     onPress={(e) =>
                       navigation.push('EventDetail', {
                         eventId: e.id,

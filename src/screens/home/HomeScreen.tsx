@@ -24,12 +24,12 @@ export function HomeScreen() {
         eventService.featured().catch(() => []),
         eventService.listCategories().catch(() => []),
         eventService.search({ limit: 10 }),
-        recommendationService.personalized(10).catch(() => []),
+        recommendationService.forMe(8).catch(() => []),
       ]).then(([featured, categories, upcoming, recommended]) => ({
         featured,
         categories,
         upcoming: upcoming.items,
-        recommended: recommended.map((r) => r.event),
+        recommended,
       })),
     [],
   )
@@ -82,11 +82,12 @@ export function HomeScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.carousel}
             >
-              {recommended.map((e) => (
+              {recommended.map((r) => (
                 <EventCard
-                  key={e.id}
-                  event={e}
+                  key={r.event.id}
+                  event={r.event}
                   variant="carousel"
+                  caption={r.reason}
                   onPress={openEvent}
                 />
               ))}
