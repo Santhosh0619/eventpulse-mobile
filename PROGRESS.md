@@ -268,6 +268,7 @@ backend's deferred infra.
 ## Deployment phase (21 ideas)
 
 ### Idea 14 — AI Recommendations (Gemini) ✅ COMPLETE
+
 - recommendationService: added `forMe` (GET /recommendations/for-me) and
   `similarAi` (GET /events/{id}/similar) + `AiRecommendedEvent` type. Heuristic
   `personalized`/`similar` kept for reference.
