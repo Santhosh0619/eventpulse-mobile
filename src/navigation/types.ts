@@ -44,9 +44,15 @@ export type ReviewScreens = {
   ReviewForm: { eventId: string }
 }
 
+/** AI chatbot screen, shared by the stacks that host EventDetail. */
+export type ChatScreens = {
+  EventChat: { eventId: string; eventTitle?: string }
+}
+
 /** Home tab stack. */
 export type HomeStackParamList = CheckoutScreens &
-  ReviewScreens & {
+  ReviewScreens &
+  ChatScreens & {
     HomeMain: undefined
     EventDetail: EventDetailParams
     CategoryEvents: { categoryId: string; name: string }
@@ -55,7 +61,8 @@ export type HomeStackParamList = CheckoutScreens &
 
 /** Discover tab stack. */
 export type DiscoverStackParamList = CheckoutScreens &
-  ReviewScreens & {
+  ReviewScreens &
+  ChatScreens & {
     DiscoverMain: undefined
     MapDiscover: undefined
     EventDetail: EventDetailParams

@@ -267,6 +267,17 @@ backend's deferred infra.
 
 ## Deployment phase (21 ideas)
 
+### Idea 19 — AI Chatbot for Attendees (Gemini) ✅ COMPLETE
+
+- chatService.ask (POST /events/{id}/chat) + `ChatAnswer` type.
+- EventChatScreen: chat UI (message bubbles, input + Send, KeyboardAvoidingView),
+  posts questions, renders answers, shows "N questions left this hour", flags
+  fallback answers (generated_by_ai=false), surfaces the 429 rate-limit message.
+- Registered `EventChat` in HomeStack + DiscoverStack (ChatScreens param type).
+- EventDetailScreen: "Ask AI about this event" button (published events only) →
+  navigates to EventChat.
+- 95 tests pass (was 90).
+
 ### Idea 14 — AI Recommendations (Gemini) ✅ COMPLETE
 
 - recommendationService: added `forMe` (GET /recommendations/for-me) and
