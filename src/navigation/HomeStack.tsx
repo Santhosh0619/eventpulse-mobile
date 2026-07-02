@@ -5,6 +5,7 @@ import { ConfirmationScreen } from '@/screens/checkout/ConfirmationScreen'
 import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
 import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { CategoryEventsScreen } from '@/screens/events/CategoryEventsScreen'
+import { EventChatScreen } from '@/screens/events/EventChatScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { ReviewFormScreen } from '@/screens/events/ReviewFormScreen'
 import { ReviewsScreen } from '@/screens/events/ReviewsScreen'
@@ -86,6 +87,11 @@ export function HomeStack() {
         name="ReviewForm"
         component={ReviewFormScreen}
         options={{ title: 'Write a Review' }}
+      />
+      <Stack.Screen
+        name="EventChat"
+        component={EventChatScreen}
+        options={{ title: 'Ask AI' }}
       />
       <Stack.Screen
         name="NotificationCenter"

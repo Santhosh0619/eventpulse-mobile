@@ -178,6 +178,25 @@ export function EventDetailScreen() {
               })
             }
           />
+          {event.status === 'published' ? (
+            <Button
+              title="Ask AI about this event"
+              variant="outline"
+              leftIcon={
+                <Ionicons
+                  name="chatbubble-ellipses-outline"
+                  size={18}
+                  color={colors.primary}
+                />
+              }
+              onPress={() =>
+                navigation.navigate('EventChat', {
+                  eventId: event.id,
+                  eventTitle: event.title,
+                })
+              }
+            />
+          ) : null}
         </View>
 
         {similar && similar.length > 0 ? (

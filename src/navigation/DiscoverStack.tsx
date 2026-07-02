@@ -7,6 +7,7 @@ import { OrderSummaryScreen } from '@/screens/checkout/OrderSummaryScreen'
 import { PaymentScreen } from '@/screens/checkout/PaymentScreen'
 import { DiscoverScreen } from '@/screens/discover/DiscoverScreen'
 import { MapDiscoverScreen } from '@/screens/discover/MapDiscoverScreen'
+import { EventChatScreen } from '@/screens/events/EventChatScreen'
 import { EventDetailScreen } from '@/screens/events/EventDetailScreen'
 import { ReviewFormScreen } from '@/screens/events/ReviewFormScreen'
 import { ReviewsScreen } from '@/screens/events/ReviewsScreen'
@@ -90,6 +91,11 @@ export function DiscoverStack() {
         name="ReviewForm"
         component={ReviewFormScreen}
         options={{ title: 'Write a Review' }}
+      />
+      <Stack.Screen
+        name="EventChat"
+        component={EventChatScreen}
+        options={{ title: 'Ask AI' }}
       />
     </Stack.Navigator>
   )
