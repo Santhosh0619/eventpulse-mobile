@@ -93,7 +93,12 @@ export function DiscoverScreen() {
             autoCapitalize="none"
           />
           {searchText ? (
-            <Pressable onPress={() => setSearchText('')} hitSlop={8}>
+            <Pressable
+              onPress={() => setSearchText('')}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Clear search"
+            >
               <Ionicons
                 name="close-circle"
                 size={18}
@@ -106,6 +111,8 @@ export function DiscoverScreen() {
           style={styles.filterBtn}
           onPress={() => setSheetVisible(true)}
           hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Open filters"
         >
           <Ionicons name="options-outline" size={22} color={colors.primary} />
           {activeFilterCount > 0 ? (

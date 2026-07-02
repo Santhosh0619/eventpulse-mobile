@@ -3,6 +3,7 @@ import type { StackNavigationProp } from '@react-navigation/stack'
 import Slider from '@react-native-community/slider'
 import { useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { CategoryChip } from '@/components/events/CategoryChip'
 import { Button, Card, Spinner } from '@/components/ui'
@@ -66,60 +67,63 @@ export function PreferencesScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
-      <Text style={styles.intro}>
-        Tell us what you like so we can recommend better events.
-      </Text>
+    <SafeAreaView style={styles.safe} edges={['left', 'right', 'bottom']}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.intro}>
+          Tell us what you like so we can recommend better events.
+        </Text>
 
-      <Card>
-        <Text style={styles.label}>Favorite categories</Text>
-        <View style={styles.chips}>
-          {(categories ?? []).map((c) => (
-            <CategoryChip
-              key={c.id}
-              category={c}
-              selected={selected.includes(c.id)}
-              onPress={() => toggle(c.id)}
-            />
-          ))}
-        </View>
-      </Card>
+        <Card>
+          <Text style={styles.label}>Favorite categories</Text>
+          <View style={styles.chips}>
+            {(categories ?? []).map((c) => (
+              <CategoryChip
+                key={c.id}
+                category={c}
+                selected={selected.includes(c.id)}
+                onPress={() => toggle(c.id)}
+              />
+            ))}
+          </View>
+        </Card>
 
-      <Card>
-        <Text style={styles.label}>Distance</Text>
-        <Text style={styles.value}>Within {Math.round(radiusKm)} km</Text>
-        <Slider
-          minimumValue={5}
-          maximumValue={200}
-          step={5}
-          value={radiusKm}
-          onValueChange={setRadiusKm}
-          minimumTrackTintColor={colors.primary}
-          thumbTintColor={colors.primary}
-        />
-      </Card>
+        <Card>
+          <Text style={styles.label}>Distance</Text>
+          <Text style={styles.value}>Within {Math.round(radiusKm)} km</Text>
+          <Slider
+            minimumValue={5}
+            maximumValue={200}
+            step={5}
+            value={radiusKm}
+            onValueChange={setRadiusKm}
+            minimumTrackTintColor={colors.primary}
+            thumbTintColor={colors.primary}
+          />
+        </Card>
 
-      <Card>
-        <Text style={styles.label}>Max ticket price</Text>
-        <Text style={styles.value}>Up to {formatMoney(maxPrice, 'INR')}</Text>
-        <Slider
-          minimumValue={0}
-          maximumValue={10000}
-          step={100}
-          value={maxPrice}
-          onValueChange={setMaxPrice}
-          minimumTrackTintColor={colors.primary}
-          thumbTintColor={colors.primary}
-        />
-      </Card>
+        <Card>
+          <Text style={styles.label}>Max ticket price</Text>
+          <Text style={styles.value}>Up to {formatMoney(maxPrice, 'INR')}</Text>
+          <Slider
+            minimumValue={0}
+            maximumValue={10000}
+            step={100}
+            value={maxPrice}
+            onValueChange={setMaxPrice}
+            minimumTrackTintColor={colors.primary}
+            thumbTintColor={colors.primary}
+          />
+        </Card>
 
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button title="Save preferences" loading={saving} onPress={save} />
-    </ScrollView>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <Button title="Save preferences" loading={saving} onPress={save} />
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.surface },
   content: {
     padding: spacing.lg,
     gap: spacing.md,

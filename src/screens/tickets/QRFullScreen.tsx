@@ -35,7 +35,7 @@ export function QRFullScreen() {
   }, [])
 
   return (
-    <Screen>
+    <Screen edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.center}>
         {eventTitle ? <Text style={styles.event}>{eventTitle}</Text> : null}
         {name ? <Text style={styles.name}>{name}</Text> : null}
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
   name: { fontSize: fontSizes.md, color: colors.textMuted },
   qrWrap: {
     padding: spacing.lg,
-    backgroundColor: '#FFFFFF',
+    // Always white so the QR stays scannable regardless of theme.
+    backgroundColor: colors.textInverse,
     borderRadius: spacing.md,
   },
   code: {

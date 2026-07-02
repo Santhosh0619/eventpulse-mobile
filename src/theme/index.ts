@@ -15,6 +15,8 @@ export const colors = {
   text: '#111827',
   textMuted: '#6B7280',
   textInverse: '#FFFFFF',
+  /** True black — used for full-bleed camera backdrops. */
+  black: '#000000',
   success: '#059669',
   successLight: '#D1FAE5',
   warning: '#D97706',

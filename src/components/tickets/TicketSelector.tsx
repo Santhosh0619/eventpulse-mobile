@@ -111,6 +111,8 @@ export function TicketSelector({
                       qty === 0 && styles.stepBtnDisabled,
                     ]}
                     hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Decrease ${tier.name} quantity`}
                     testID={`dec-${tier.ticket_type_id}`}
                   >
                     <Ionicons name="remove" size={18} color={colors.primary} />
@@ -124,6 +126,8 @@ export function TicketSelector({
                       (disabled || qty >= max) && styles.stepBtnDisabled,
                     ]}
                     hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Increase ${tier.name} quantity`}
                     testID={`inc-${tier.ticket_type_id}`}
                   >
                     <Ionicons name="add" size={18} color={colors.primary} />
