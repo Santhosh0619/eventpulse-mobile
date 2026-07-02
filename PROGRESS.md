@@ -267,6 +267,20 @@ backend's deferred infra.
 
 ## Deployment phase (21 ideas)
 
+### Idea 4 — UI/UX Audit Pass ✅ COMPLETE
+
+Audited all screens + components (app was in strong shape). Concrete fixes:
+
+- QRScannerScreen: hard-coded `#000`/`#FFFFFF` → theme tokens (`colors.black` added,
+  reticle/hint use `colors.textInverse`).
+- DiscoverScreen: added `accessibilityRole`/`accessibilityLabel` to the clear-search and
+  open-filters icon buttons.
+- TicketSelector: added accessibility labels to the +/- quantity stepper buttons.
+- QRFullScreen: QR wrapper uses `colors.textInverse` (stays white in any theme); added the
+  bottom safe-area edge so the code isn't clipped on notched devices.
+- PreferencesScreen: wrapped the ScrollView in SafeAreaView (bottom inset) for consistency.
+- 95 tests still pass.
+
 ### Idea 19 — AI Chatbot for Attendees (Gemini) ✅ COMPLETE
 
 - chatService.ask (POST /events/{id}/chat) + `ChatAnswer` type.

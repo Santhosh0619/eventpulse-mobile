@@ -123,7 +123,7 @@ export function QRScannerScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#000' },
+  flex: { flex: 1, backgroundColor: colors.black },
   center: {
     flex: 1,
     alignItems: 'center',
@@ -147,11 +147,15 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderWidth: 3,
-    borderColor: '#FFFFFF',
+    borderColor: colors.textInverse,
     borderRadius: radii.lg,
     backgroundColor: 'transparent',
   },
-  scanHint: { color: '#FFFFFF', fontSize: fontSizes.md, fontWeight: '600' },
+  scanHint: {
+    color: colors.textInverse,
+    fontSize: fontSizes.md,
+    fontWeight: '600',
+  },
   resultSheet: {
     position: 'absolute',
     left: 0,
